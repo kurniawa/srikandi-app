@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Account {
+  CashflowId String
+  CreatedAt  DateTime @default(now())
+  Id         String   @id @unique
+  NamaWallet String
+  Saldo      Int
+  TimeId     Int      @unique
+  TipeWallet String
+  UpdatedAt  DateTime
+  Cashflow   Cashflow @relation(fields: [CashflowId], references: [Id])
+}
+
+model Cashflow {
+  CreatedAt     DateTime  @default(now())
+  Id            String    @id @unique
+  Jumlah        Int
+  Keterangan    String?
+  NamaTransaksi String?
+  NamaWallet    String
+  TimeId        Int       @unique
+  Tipe          String
+  TipeWallet    String
+  UpdatedAt     DateTime
+  Account       Account[]
+}
+
+model Customer {
+  Alamat     Json?
+  Birthday   DateTime?
+  Birthplace String?
+  CreatedAt  DateTime  @default(now())
+  Documents  Json?
+  Email      String?   @unique
+  Id         String    @id @unique
+  Name       String
+  Nik        String?   @unique
+  Password   String?
+  Phone      Json?
+  PhotoPath  String?
+  Role       String
+  UpdatedAt  DateTime
+  Username   String?   @unique
+  Invoice    Invoice[]
+}
+
+model Invoice {
+  CreatedAt        DateTime @default(now())
+  CustomerId       String
+  CustomerUsername String?
+  HargaTotal       Int
+  History          Json?
+  Id               String   @id @unique
+  StatusBuyback    String?
+  TanggalInvoice   DateTime @default(now())
+  UpdatedAt        DateTime
+  UserId           String
+  Username         String
+  Customer         Customer @relation(fields: [CustomerId], references: [Id])
+  User             User     @relation(fields: [UserId], references: [Id])
+  Item             Item[]
+}
+
+model Item {
+  HargaItem      Int?
+  HargaPerGram   Int?
+  Id             String    @id @unique
+  InvoiceId      String?
+  Name           String
+  OngkosPerGram  Int?
+  ProductId      String
+  StatusBuyback  String?
+  TanggalBuyback DateTime?
+  Invoice        Invoice?  @relation(fields: [InvoiceId], references: [Id])
+  Product        Product   @relation(fields: [ProductId], references: [Id])
+}
+
+model PriceHistory {
+  CreatedAt     DateTime @default(now())
+  HargaPerGram  Int?
+  Id            String   @id @unique
+  Kadar         Int?
+  OngkosPerGram Int?
+  TipeBarang    String
+  UpdatedAt     DateTime
+  WarnaEmas     String?
+}
+
+model Product {
+  Barcode       Int?     @unique
+  Berat         Int?
+  Cap           String?
+  CreatedAt     DateTime @default(now())
+  HargaPerGram  Int?
+  HargaProduk   Int?
+  Id            String   @id @unique
+  Kadar         Int?
+  Keterangan    String?
+  Nama          String
+  Nampan        String?
+  OngkosPerGram Int?
+  Plat          Int?
+  RangeUsia     Int?
+  Stok          Int?
+  TipeBarang    String
+  TipePerhiasan String?
+  Ukuran        Int?
+  UpdatedAt     DateTime
+  WarnaEmas     String?
+  Item          Item[]
+}
+
+model Test {
+  Id   String  @id @unique
+  Nama String?
+}
+
+model User {
+  Alamat     String?
+  Birthday   DateTime?
+  Birthplace String?
+  CreatedAt  DateTime  @default(now())
+  Documents  String?
+  Email      String?   @unique
+  Id         String    @id @unique
+  Nama       String
+  Nik        String?   @unique
+  Password   String
+  Phone      String?
+  PhotoPaths String?
+  Role       String
+  UpdatedAt  DateTime
+  Username   String    @unique
+  Invoice    Invoice[]
+}
