@@ -1,17 +1,24 @@
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import Navbar from './components/Navbar';
-import { SessionProvider } from 'next-auth/react';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   return (
-    <SessionProvider>
-      <main className="text-xs">
-        <Navbar></Navbar>
-        <h1>Hi Falentine</h1>
-      </main>
-    </SessionProvider>
+    <>
+      <div className="p-2">
+        <div className="flex justify-end">
+          <Link
+            href={'products/add'}
+            className="btn btn-success btn-xs text-white"
+          >
+            + Product
+          </Link>
+        </div>
+      </div>
+      <div className="mt-9 flex justify-center"></div>
+    </>
   );
 }

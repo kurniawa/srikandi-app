@@ -5,9 +5,8 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Navbar = () => {
   //   const { data, status }: { data: any; status: string } = useSession();
-  const data: any = useSession();
-  // console.log(session);
-  // console.log(status);
+  const session: any = useSession();
+  //   console.log(session);
 
   return (
     <nav className="navbar bg-neutral text-neutral-content">
@@ -58,12 +57,12 @@ const Navbar = () => {
               </div>
             </div>
             <ul className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52 text-neutral">
-              {data ? (
+              {session ? (
                 <>
-                  {data.status === 'authenticated' ? (
+                  {session.status === 'authenticated' ? (
                     <>
                       <li>
-                        <span>Hi, {data.session.user.fullname}</span>
+                        <span>Hi, {session.data.user.fullname}</span>
                       </li>
                       <li>
                         <a className="justify-between">
