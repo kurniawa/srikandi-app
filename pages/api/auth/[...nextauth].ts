@@ -1,12 +1,12 @@
 import NextAuth from 'next-auth/next';
 // import { authOptions } from '../../lib/authOptions';
-import { login } from '@/pages/lib/firebase/service';
+import { login } from '@/lib/firebase/service';
 // import { compare } from 'bcrypt';
 import bcryptjs from 'bcryptjs';
-// import { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const authOptions = {
+const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
@@ -34,10 +34,13 @@ const authOptions = {
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         // const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' };
-        const { username, password } = credentials;
+        const { username, password } = credentials as {
+          username: string;
+          password: string;
+        };
 
         // console.log(username, password);
-        const user = await login({ username });
+        const user: any = await login({ username });
         // console.log(user);
 
         if (user) {
@@ -60,7 +63,7 @@ const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile, user }) {
+    async jwt({ token, account, profile, user }: any) {
       if (account?.provider === 'credentials') {
         token.username = user.username;
         token.fullname = user.fullname;
@@ -68,7 +71,7 @@ const authOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       // if (token) {
       //   session.id = token.id;
       //   session.name = token.name;
@@ -90,7 +93,8 @@ const authOptions = {
   },
 };
 
-const handler = NextAuth(authOptions);
+// const handler = NextAuth(authOptions);
+export default NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+// export { handler as GET, handler as POST };
 //   export { handler as GET, handler as POST, handler as PUT, handler as DELETE, handler as HEAD, handler as PATCH, handler as OPTIONS };
