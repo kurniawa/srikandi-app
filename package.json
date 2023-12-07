@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
+    "bcryptjs": "^2.4.3",
+    "firebase": "^10.7.1",
     "next": "14.0.3",
     "next-auth": "^4.24.5",
     "react": "^18",
