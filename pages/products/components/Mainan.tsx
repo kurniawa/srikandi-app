@@ -64,19 +64,20 @@ const Mainan = () => {
     console.log(htmlMainan);
     console.log(key_to_rm);
     setHtmlMainan(
-      htmlMainan.filter(
-        (html: any) =>
-          // // console.log('html.key');
-          // console.log(html.key);
-          // // console.log('i');
-          // console.log(i);
-          // if (parseInt(html.key) < i || parseInt(html.key) > i) {
-          //   console.log(parseInt(html.key));
-          //   console.log(i);
-          //   return html;
-          // }
-          html.key !== key_to_rm
-      )
+      htmlMainan.filter((html: any, index: number) => {
+        console.log('index');
+        console.log(index);
+        // // console.log('html.key');
+        // console.log(html.key);
+        // // console.log('i');
+        // console.log(i);
+        // if (parseInt(html.key) < i || parseInt(html.key) > i) {
+        //   console.log(parseInt(html.key));
+        //   console.log(i);
+        //   return html;
+        // }
+        html.key !== key_to_rm;
+      })
     );
   };
 
