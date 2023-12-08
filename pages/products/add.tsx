@@ -77,6 +77,30 @@ const AddProductPage = () => {
           <div className="grid grid-cols-2 gap-2">
             <div className="form-control w-full">
               <div className="label">
+                <span className="label-text">harga_gr</span>
+              </div>
+              <input
+                type="number"
+                placeholder="harga_gr..."
+                name="harga_gr"
+                className="input input-bordered input-sm w-full"
+              />
+            </div>
+            <div className="form-control w-full">
+              <div className="label">
+                <span className="label-text">harga_t</span>
+              </div>
+              <input
+                type="number"
+                placeholder="harga_t..."
+                name="harga_t"
+                className="input input-bordered input-sm w-full"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="form-control w-full">
+              <div className="label">
                 <span className="label-text">warna_emas</span>
               </div>
               <select
@@ -103,30 +127,6 @@ const AddProductPage = () => {
                 <option value={60}>60</option>
                 <option value={50}>50</option>
               </select>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="form-control w-full">
-              <div className="label">
-                <span className="label-text">harga_gr</span>
-              </div>
-              <input
-                type="number"
-                placeholder="harga_gr..."
-                name="harga_gr"
-                className="input input-bordered input-sm w-full"
-              />
-            </div>
-            <div className="form-control w-full">
-              <div className="label">
-                <span className="label-text">harga_t</span>
-              </div>
-              <input
-                type="number"
-                placeholder="harga_t..."
-                name="harga_t"
-                className="input input-bordered input-sm w-full"
-              />
             </div>
           </div>
           <div className="form-control w-full">
