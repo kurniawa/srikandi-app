@@ -1,4 +1,4 @@
-import UploadImage from './components/UploadImage';
+import UploadImage from './add/components/UploadImage';
 
 const Products = () => {
   return (

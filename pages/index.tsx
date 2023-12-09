@@ -2,13 +2,17 @@ import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import Navbar from './components/Navbar';
 import Link from 'next/link';
+import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   return (
     <>
-      <div className="p-2">
+      <SessionProvider>
+        <Navbar></Navbar>
+      </SessionProvider>
+      <main className='p-2'>
         <div className="flex justify-end">
           <Link
             href={'products/add'}
@@ -17,8 +21,7 @@ export default function Home() {
             + Product
           </Link>
         </div>
-      </div>
-      <div className="mt-9 flex justify-center"></div>
+      </main>
     </>
   );
 }
