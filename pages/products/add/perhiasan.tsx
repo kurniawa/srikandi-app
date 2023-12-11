@@ -8,17 +8,28 @@ import TipeBarang from './components/TipeBarang';
 import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/pages/components/Navbar';
 import TipePerhiasan from './components/TipePerhiasan';
+import Kadar from './components/Kadar';
+import Berat from './components/Berat';
+import Nama from './components/Nama';
+import HargaGr from './components/HargaGr';
+import HargaT from './components/HargaT';
+import Deskripsi from './components/Deskripsi';
+import { addProduct } from './functionAddProduct';
 
 const AddProductPage = () => {
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleAddProduct = (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    console.log(e.target)
-    console.log(e.target.nama);
-    console.log(e.target.warna_mata);
-    console.log(e.target.test);
-  };
+    setErrorMessage('');
+    const res = addProduct(e);
+    if (res.status === 400) {
+      setErrorMessage(res.message);
+    }
+  }
 
   const [showMata, setShowMata] = useState(false);
+
 
   const toggleMata = (el: BaseSyntheticEvent) => {
     if (el.target.checked) {
@@ -47,81 +58,23 @@ const AddProductPage = () => {
       <SessionProvider>
         <Navbar></Navbar>
       </SessionProvider>
-      <main className="p-2">
+      <main className="p-2 mb-52">
         <div>
           <form action="" method="POST" onSubmit={(e) => handleAddProduct(e)}>
           <div className="grid grid-cols-2 gap-2">
               <TipeBarang tipe_barang='perhiasan'></TipeBarang>
               <TipePerhiasan></TipePerhiasan>
             </div>
-            <div className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-bold">nama</span>
-              </div>
-              <input
-                type="text"
-                placeholder="nama..."
-                name="nama"
-                className="input input-bordered input-sm w-full"
-              />
+            <Nama></Nama>
+            <div className="grid grid-cols-2 gap-2">
+              <Kadar></Kadar>
+              <Berat></Berat>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <div className="form-control w-full">
-                <div className="label">
-                  <span className="label-text font-bold">kadar</span>
-                </div>
-                <input
-                  type="number"
-                  placeholder="kadar..."
-                  name="kadar"
-                  className="input input-bordered input-sm w-full"
-                />
-              </div>
-              <div className="form-control w-full">
-                <div className="label">
-                  <span className="label-text font-bold">berat</span>
-                </div>
-                <input
-                  type="number"
-                  placeholder="berat..."
-                  name="berat"
-                  className="input input-bordered input-sm w-full"
-                />
-              </div>
+              <HargaGr></HargaGr>
+              <HargaT></HargaT>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="form-control w-full">
-                <div className="label">
-                  <span className="label-text font-bold">harga_gr</span>
-                </div>
-                <input
-                  type="number"
-                  placeholder="harga_gr..."
-                  name="harga_gr"
-                  className="input input-bordered input-sm w-full"
-                />
-              </div>
-              <div className="form-control w-full">
-                <div className="label">
-                  <span className="label-text font-bold">harga_t</span>
-                </div>
-                <input
-                  type="number"
-                  placeholder="harga_t..."
-                  name="harga_t"
-                  className="input input-bordered input-sm w-full"
-                />
-              </div>
-            </div>
-            <div className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-bold">deskripsi</span>
-              </div>
-              <textarea
-                className="textarea textarea-bordered h-24"
-                placeholder="deskripsi..."
-              ></textarea>
-            </div>
+            <Deskripsi></Deskripsi>
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">
                 <span className='font-bold'>attribute</span>
@@ -183,6 +136,19 @@ const AddProductPage = () => {
             </div>
           </form>
         </div>
+        {errorMessage && 
+        <div role="alert" className="w-3/4 flex justify-between bg-primary p-3 rounded fixed bottom-9 text-white animate-pulse">
+          <div className="flex gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <span>{errorMessage}</span>
+          </div>
+          <button type='button' className='text-white' onClick={()=>setErrorMessage('')}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        }
       </main>
     </>
   );

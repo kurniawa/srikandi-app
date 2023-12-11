@@ -55,8 +55,8 @@ const Mainan = () => {
         <div className="w-1/2">
           <input
             type="text"
-            placeholder="warna_mainan..."
-            name="warna_mainan"
+            placeholder="mainan..."
+            name="mainan"
             className="input input-bordered input-sm w-full"
           />
         </div>

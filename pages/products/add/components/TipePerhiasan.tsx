@@ -6,7 +6,7 @@ const TipePerhiasan = () => {
             </div>
             <select
             className="select select-bordered select-sm"
-            name="warna_emas"
+            name="tipe_perhiasan"
             >
                 <option value={'AT'}>AT</option>
                 <option value={'GW'}>GW</option>
