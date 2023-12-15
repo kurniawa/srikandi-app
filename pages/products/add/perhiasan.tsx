@@ -11,10 +11,10 @@ import TipePerhiasan from './components/TipePerhiasan';
 import Kadar from './components/Kadar';
 import Berat from './components/Berat';
 import Nama from './components/Nama';
-import HargaGr from './components/HargaGr';
+import KadarBeratHarga from './components/KadarBeratHarga';
 import HargaT from './components/HargaT';
 import Deskripsi from './components/Deskripsi';
-import { addProduct } from './functionAddProduct';
+import { addProduct } from '../../../lib/addProduct';
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -66,14 +66,7 @@ const AddProductPage = () => {
               <TipePerhiasan></TipePerhiasan>
             </div>
             <Nama></Nama>
-            <div className="grid grid-cols-2 gap-2">
-              <Kadar></Kadar>
-              <Berat></Berat>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <HargaGr></HargaGr>
-              <HargaT></HargaT>
-            </div>
+            <KadarBeratHarga></KadarBeratHarga>
             <Deskripsi></Deskripsi>
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">

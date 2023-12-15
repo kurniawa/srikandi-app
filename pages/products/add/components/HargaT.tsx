@@ -1,16 +1,24 @@
+import formatPrice from "@/lib/format";
+import { BaseSyntheticEvent, useState } from "react";
+
 const HargaT = () => {
+  const [formattedVal, setFormattedVal] = useState('');
+
+  const handleFormat = (e:BaseSyntheticEvent) => {
+    const val = e.target.value;
+    if (!isNaN(val)) {
+      const float_val = parseFloat(val);
+      const val_100 = float_val * 100;
+
+      // console.log(parseFloat(val));
+      // console.log(formatPrice(val_100))
+      setFormattedVal(formatPrice(val_100))
+    } else {
+      setFormattedVal('?')
+    }
+  }
     return ( 
-        <div className="form-control w-full">
-          <div className="label">
-            <span className="label-text font-bold">harga_t</span>
-          </div>
-          <input
-            type="text"
-            placeholder="harga_t..."
-            name="harga_t"
-            className="input input-bordered input-sm w-full"
-          />
-        </div>
+        <></>
     );
 }
  
