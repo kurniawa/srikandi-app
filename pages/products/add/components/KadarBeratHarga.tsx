@@ -4,7 +4,7 @@ import Kadar from "./Kadar";
 
 const KadarBeratHarga = () => {
   // FUNGSI BERAT
-  const [berat, setBerat] = useState(0.0);
+  const [berat, setBerat] = useState(0.00);
   const [errorBerat, setErrorBerat] = useState('');
   const [statusBerat, setStatusBerat] = useState('406'); // not accepted
   
@@ -33,11 +33,12 @@ const KadarBeratHarga = () => {
   // END - FUNGSI BERAT
 
   // FUNGSI HARGA_GR
-  const [hargaGr, setHargaGr] = useState(0.00);
+  const [hargaGr, setHargaGr] = useState('');
   const [formattedHargaGr, setFormattedHargaGr] = useState('');
   const [statusHargaGr, setStatusHargaGr] = useState('406');
   
   const handleInputHargaGr = (e:BaseSyntheticEvent) => {
+    setCountHargaGr(false);
     const val = e.target.value.trim();
 
     if (val === '') {
@@ -58,18 +59,20 @@ const KadarBeratHarga = () => {
       // console.log(formatPrice(val_100))
       setFormattedHargaGr(formatPrice(val_100))
       setStatusHargaGr('202')
-      setHargaGr(float_val);
+      setHargaGr(val);
+      setCountHargaT(true);
     }
 
   }
   // END - FUNGSI HARGA_GR
   
   // FUNGSI HARGA_T
-  const [hargaT, setHargaT] = useState(0.00);
+  const [hargaT, setHargaT] = useState('');
   const [formattedHargaT, setFormattedHargaT] = useState('');
   const [statusHargaT, setStatusHargaT] = useState('406');
 
   const handleInputHargaT = (e:BaseSyntheticEvent) => {
+    setCountHargaT(false)
     const harga_t_val = e.target.value.trim();
 
     if (harga_t_val === '') {
@@ -83,32 +86,39 @@ const KadarBeratHarga = () => {
       setStatusHargaT('406')
       return
     } else {
-      setHargaT(parseFloat(harga_t_val));
-      setFormattedHargaT(formatPrice(harga_t_val))
+      setHargaT(harga_t_val);
+      setFormattedHargaT(formatPrice(parseFloat(harga_t_val) * 100))
       setStatusHargaT('202')
+      setCountHargaGr(true)
     }
 
   }
-  
-  useEffect(() => {
-    if (statusBerat === '202' && statusHargaGr === '202') {
-      const harga_total = berat * hargaGr
-      // console.log(harga_total);
-      setHargaT(harga_total);
-      setFormattedHargaT(formatPrice(harga_total * 100))
-      setStatusHargaT('202')
-    }
-  }, [berat, hargaGr, statusBerat, statusHargaGr])
+  const [countHargaT, setCountHargaT] = useState(false);
+  const [countHargaGr, setCountHargaGr] = useState(false);
 
   useEffect(() => {
-    if (statusBerat === '202' && statusHargaT === '202') {
-      // console.log('test')
-      const harga_gr = hargaT / berat;
-      setHargaGr(harga_gr)
-      setFormattedHargaGr(formatPrice(harga_gr * 100))
-      setStatusHargaGr('202')
+    if (countHargaT) {
+      if (statusBerat === '202' && statusHargaGr === '202') {
+        const harga_total = berat * parseFloat(hargaGr)
+        // console.log(harga_total);
+        setHargaT(harga_total.toString());
+        setFormattedHargaT(formatPrice(harga_total * 100))
+        setStatusHargaT('202')
+      }
     }
-  }, [hargaT, berat, statusBerat, statusHargaT])
+  }, [countHargaT, berat, hargaGr, statusBerat, statusHargaGr])
+
+  useEffect(() => {
+    if (countHargaGr) {
+      if (statusBerat === '202' && statusHargaT === '202') {
+        // console.log('test')
+        const harga_gr = parseFloat(hargaT) / berat;
+        setHargaGr(harga_gr.toString())
+        setFormattedHargaGr(formatPrice(harga_gr * 100))
+        setStatusHargaGr('202')
+      }
+    }
+  }, [countHargaGr, hargaT, berat, statusBerat, statusHargaT])
   
   // END - FUNGSI HARGA_T
 

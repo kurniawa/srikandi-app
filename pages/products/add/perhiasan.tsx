@@ -15,6 +15,8 @@ import KadarBeratHarga from './components/KadarBeratHarga';
 import HargaT from './components/HargaT';
 import Deskripsi from './components/Deskripsi';
 import { addProduct } from '../../../lib/addProduct';
+import Plat from './components/Plat';
+import Nampan from './components/Nampan';
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -45,10 +47,28 @@ const AddProductPage = () => {
   const toggleMainan = (el: BaseSyntheticEvent) => {
     if (el.target.checked) {
       setShowMainan(true);
-      el.target.value = 'mata';
     } else {
       setShowMainan(false);
-      el.target.value = '';
+    }
+    // console.log(el.target);
+  };
+
+  const [showPlat, setShowPlat] = useState(false);
+  const togglePlat = (el: BaseSyntheticEvent) => {
+    if (el.target.checked) {
+      setShowPlat(true);
+    } else {
+      setShowPlat(false);
+    }
+    // console.log(el.target);
+  };
+
+  const [showNampan, setShowNampan] = useState(false);
+  const toggleNampan = (el: BaseSyntheticEvent) => {
+    if (el.target.checked) {
+      setShowNampan(true);
+    } else {
+      setShowNampan(false);
     }
     // console.log(el.target);
   };
@@ -79,6 +99,10 @@ const AddProductPage = () => {
               <Cap></Cap>
               {showMata && <Mata></Mata>}
               {showMainan && <Mainan></Mainan>}
+              <div className="grid grid-cols-2 gap-2 md:w-1/2">
+                {showPlat && <Plat></Plat>}
+                {showNampan && <Nampan></Nampan>}
+              </div>
             </div>
             <input type="hidden" name="test" defaultValue={'test'} />
             <input type="hidden" name="test" defaultValue={'123'} />
@@ -113,6 +137,7 @@ const AddProductPage = () => {
                   <input
                     type="checkbox"
                     className="checkbox border-4 checkbox-xs checkbox-secondary"
+                    onChange={(el) => togglePlat(el)}
                   />
                   <span className="label-text">plat</span>
                 </label>
@@ -122,6 +147,7 @@ const AddProductPage = () => {
                   <input
                     type="checkbox"
                     className="checkbox border-4 checkbox-xs checkbox-secondary"
+                    onChange={(el) => toggleNampan(el)}
                   />
                   <span className="label-text">nampan</span>
                 </label>
