@@ -2,7 +2,7 @@ const Kadar = () => {
     return ( 
         <div className="form-control w-full">
             <div className="label">
-                <span className="label-text font-bold">kadar(%)</span>
+                <span className="label-text font-bold">kadar(%.)</span>
             </div>
             <input
             type="text"

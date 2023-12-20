@@ -8,7 +8,7 @@ const Cap = () => {
                 type="text"
                 placeholder="cap..."
                 name="cap"
-                className="input input-bordered input-sm w-1/2 md:w-1/4"
+                className="input input-bordered input-sm"
             />
       </div>
      );

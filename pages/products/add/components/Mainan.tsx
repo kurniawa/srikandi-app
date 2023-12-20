@@ -26,7 +26,7 @@ const Mainan = () => {
   return (
     <div className='mt-1'>
       <div className="flex gap-1 items-center">
-        <span className='label-text font-bold'>warna_mainan</span>
+        <span className='label-text font-bold'>mainan</span>
         <div>
           <button
             type="button"

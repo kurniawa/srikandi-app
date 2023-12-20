@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useState } from 'react';
+import { BaseSyntheticEvent, useEffect, useState } from 'react';
 import Mata from './components/Mata';
 import Mainan from './components/Mainan';
 import WarnaEmas from './components/WarnaEmas';
@@ -8,31 +8,50 @@ import TipeBarang from './components/TipeBarang';
 import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/pages/components/Navbar';
 import TipePerhiasan from './components/TipePerhiasan';
-import Kadar from './components/Kadar';
-import Berat from './components/Berat';
 import Nama from './components/Nama';
 import KadarBeratHarga from './components/KadarBeratHarga';
-import HargaT from './components/HargaT';
 import Deskripsi from './components/Deskripsi';
 import { addProduct } from '../../../lib/addProduct';
 import Plat from './components/Plat';
 import Nampan from './components/Nampan';
+import RangeUsia from './components/RangeUsia';
+import Ukuran from './components/Ukuran';
+import Merk from './components/Merk';
+import { redirect, useRouter } from 'next/navigation';
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
+  const [redirecting, setRedirecting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddProduct = (e: BaseSyntheticEvent) => {
+  const handleAddProduct = async (e: BaseSyntheticEvent) => {
+    setRedirecting(false);
+    setIsLoading(true);
     e.preventDefault();
     setErrorMessage('');
-    const res = addProduct(e);
+    const res = await addProduct(e);
     if (res.status === 400) {
       setErrorMessage(res.message);
+    } else if (res.status === 202) {
+      setTimeout(() => {
+        setRedirecting(true)
+        setIsLoading(false);
+      }, 1000);
     }
   }
 
+  const [showUkuran, setShowUkuran] = useState(false);
+  const toggleUkuran = (el: BaseSyntheticEvent) => {
+    if (el.target.checked) {
+      setShowUkuran(true);
+      
+    } else {
+      setShowUkuran(false);
+    }
+    // console.log(el.target);
+  };
+
   const [showMata, setShowMata] = useState(false);
-
-
   const toggleMata = (el: BaseSyntheticEvent) => {
     if (el.target.checked) {
       setShowMata(true);
@@ -49,6 +68,16 @@ const AddProductPage = () => {
       setShowMainan(true);
     } else {
       setShowMainan(false);
+    }
+    // console.log(el.target);
+  };
+
+  const [showMerk, setShowMerk] = useState(false);
+  const toggleMerk = (el: BaseSyntheticEvent) => {
+    if (el.target.checked) {
+      setShowMerk(true);
+    } else {
+      setShowMerk(false);
     }
     // console.log(el.target);
   };
@@ -73,6 +102,14 @@ const AddProductPage = () => {
     // console.log(el.target);
   };
 
+  const router = useRouter()
+  useEffect(() => {
+    // console.log('useEffect - redirecting')
+    if (redirecting) {
+      router.push("/products")
+    }
+  }, [redirecting, router]);
+
   return (
     <>
       <SessionProvider>
@@ -92,11 +129,14 @@ const AddProductPage = () => {
               <div className="flex justify-center">
                 <span className='font-bold'>attribute</span>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
                 <WarnaEmas></WarnaEmas>
                 <Kondisi></Kondisi>
+                <Cap></Cap>
+                <RangeUsia></RangeUsia>
+                {showUkuran && <Ukuran></Ukuran>}
+                {showMerk && <Merk></Merk>}
               </div>
-              <Cap></Cap>
               {showMata && <Mata></Mata>}
               {showMainan && <Mainan></Mainan>}
               <div className="grid grid-cols-2 gap-2 md:w-1/2">
@@ -107,8 +147,9 @@ const AddProductPage = () => {
             <input type="hidden" name="test" defaultValue={'test'} />
             <input type="hidden" name="test" defaultValue={'123'} />
             <div className="flex justify-center mt-3">
-              <button type="submit" className="btn btn-success text-white">
-                Tambah Perhiasan
+              <button type="submit" className="btn btn-success text-white" disabled={isLoading}>
+                <span>Tambah Perhiasan</span>
+                {isLoading && <span className='loading loading-spinner'></span>}
               </button>
             </div>
             <div className="flex gap-2 fixed bottom-0">
@@ -118,6 +159,7 @@ const AddProductPage = () => {
                     type="checkbox"
                     className="checkbox border-4 checkbox-xs checkbox-secondary"
                     onChange={(el) => toggleMata(el)}
+                    name='toggle_mata'
                   />
                   <span className="label-text">mata</span>
                 </label>
@@ -128,8 +170,29 @@ const AddProductPage = () => {
                     type="checkbox"
                     className="checkbox border-4 checkbox-xs checkbox-secondary"
                     onChange={(el) => toggleMainan(el)}
+                    name='toggle_mainan'
                   />
                   <span className="label-text">mainan</span>
+                </label>
+              </div>
+              <div className="form-control max-w-fit">
+                <label className="label cursor-pointer gap-1">
+                  <input
+                    type="checkbox"
+                    className="checkbox border-4 checkbox-xs checkbox-secondary"
+                    onChange={(el) => toggleUkuran(el)}
+                  />
+                  <span className="label-text">ukuran</span>
+                </label>
+              </div>
+              <div className="form-control max-w-fit">
+                <label className="label cursor-pointer gap-1">
+                  <input
+                    type="checkbox"
+                    className="checkbox border-4 checkbox-xs checkbox-secondary"
+                    onChange={(el) => toggleMerk(el)}
+                  />
+                  <span className="label-text">merk</span>
                 </label>
               </div>
               <div className="form-control max-w-fit">
