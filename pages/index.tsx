@@ -7,6 +7,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase.config';
 import { retrieveAllDataInCollection } from '@/lib/firebase/service';
 import { useEffect, useState } from 'react';
+import ProductCard from './components/ProductCard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,20 +18,30 @@ interface productInterface {
 export default function Home() {
 
   const [products, setProducts] = useState<productInterface[]>();
+  const [runGetProducts, setRunGetProducts] = useState(true);
 
   const getAllProduct = async () => {
-    const res = await retrieveAllDataInCollection('products');
-    return res;
+    if (runGetProducts) {
+      const res = await retrieveAllDataInCollection('products');
+      setProducts(res);
+      console.log(products);
+      setTimeout(() => {
+        setRunGetProducts(false);
+      }, 1000);
+    }
+    // return res;
   }
 
-  useEffect(() => {
-    // const res = getAllProduct();
-    async function fetchAllProduct() {
-      const res = await retrieveAllDataInCollection('products');
-      return res
-    }
-    setProducts(fetchAllProduct());
-  }, [setProducts])
+  // useEffect(() => {
+  //   // const res = getAllProduct();
+  //   async function fetchAllProduct() {
+  //     const res = await retrieveAllDataInCollection('products');
+  //     return res
+  //   }
+  //   setProducts(fetchAllProduct());
+  // }, [setProducts])
+
+  getAllProduct();
 
   return (
     <>
@@ -46,10 +57,10 @@ export default function Home() {
             + Product
           </Link>
         </div>
-        <div>
-        {products && products.map((product, index) => {
-            return product.id
-        })}
+        <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+        {products && products.map((product, index) => 
+          <ProductCard product={product} product_photo={null} key={index}></ProductCard>
+        )}
         </div>
       </main>
     </>
