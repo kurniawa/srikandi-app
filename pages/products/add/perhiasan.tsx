@@ -18,6 +18,7 @@ import RangeUsia from './components/RangeUsia';
 import Ukuran from './components/Ukuran';
 import Merk from './components/Merk';
 import { redirect, useRouter } from 'next/navigation';
+import JenisPerhiasan from './components/JenisPerhiasan';
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -118,12 +119,16 @@ const AddProductPage = () => {
       <main className="p-2 mb-52">
         <div>
           <form action="" method="POST" onSubmit={(e) => handleAddProduct(e)}>
-          <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <TipeBarang tipe_barang='perhiasan'></TipeBarang>
               <TipePerhiasan></TipePerhiasan>
             </div>
-            <Nama></Nama>
+            <div className="grid grid-cols-2 gap-2">
+              <JenisPerhiasan tipe_perhiasan='perhiasan'></JenisPerhiasan>
+              <div></div>
+            </div>
             <KadarBeratHarga></KadarBeratHarga>
+            <Nama></Nama>
             <Deskripsi></Deskripsi>
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">

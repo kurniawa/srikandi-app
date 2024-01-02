@@ -14,9 +14,11 @@ const ProductCard = ({product, default_photo}:any) => {
                 </div>
                 }
             </div>
+            {product && 
             <div>
                 <span>{product.nama}</span>
             </div>
+            }
         </div>
     );
 }
