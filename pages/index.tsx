@@ -8,6 +8,8 @@ import { db } from '@/firebase.config';
 import { retrieveAllDataInCollection } from '@/lib/firebase/service';
 import { useEffect, useState } from 'react';
 import ProductCard from './components/ProductCard';
+import Cart from './cart';
+import CartList from './components/CartList';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,7 +29,7 @@ export default function Home() {
       console.log(products);
       setTimeout(() => {
         setRunGetProducts(false);
-      }, 1000);
+      }, 500);
     }
     // return res;
   }
@@ -49,9 +51,10 @@ export default function Home() {
         <Navbar></Navbar>
       </SessionProvider>
       <main className='p-2'>
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <CartList></CartList>
           <Link
-            href={'products/add'}
+            href={'/products/add'}
             className="btn btn-success btn-xs text-white"
           >
             + Product

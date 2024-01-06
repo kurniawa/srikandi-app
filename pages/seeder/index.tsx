@@ -1,6 +1,6 @@
 import { db } from "@/firebase.config";
 import { retrieveAllDataInCollection } from "@/lib/firebase/service";
-import { data_perhiasan } from "@/lib/product_data";
+import { data_perhiasan, specs } from "@/lib/product_data";
 import { collection, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
@@ -8,37 +8,67 @@ const Seeder = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [feedback, setFeedback] = useState('');
 
-    const handleUserSeeding = async () => {
+    const handleDataPerhiasanSeeding = async () => {
         setIsLoading(true);
         setFeedback('');
         // USER SEEDING
-        const available_users = await retrieveAllDataInCollection('data_perhiasan');
-        available_users.forEach(async (user:any) => {
+        const avalaible_data_perhiasan = await retrieveAllDataInCollection('data_perhiasan');
+        avalaible_data_perhiasan.forEach(async (data:any) => {
             // console.log(user);
-            await deleteDoc(doc(db, "users", user.id));
+            await deleteDoc(doc(db, "data_perhiasan", data.id));
         });
         data_perhiasan.forEach(async (data) => {
             await setDoc(doc(collection(db, "data_perhiasan")), {
-                // fullname: data.fullname,
-                // username: data.username,
-                // email: data.email,
-                // email_verified: data.email_verified,
-                // // password: bcryptjs.hash(user.password, 10),
-                // tempat_lahir: data.tempat_lahir,
-                // tanggal_lahir: data.tanggal_lahir,
-                // role: data.role,
-                // created_at: Date.now(),
-                // updated_at: Date.now(),
-              });
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+                jenis: data.jenis,
+            });
         });
         // END - USER SEEDING
         setIsLoading(false);
-        setFeedback('seeding complete.')
+        setFeedback('data_perhiasan seeding complete.')
+    }
+
+    const handleSpecSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_specs = await retrieveAllDataInCollection('specs');
+        avalaible_specs.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, "specs", data.id));
+        });
+        specs.forEach(async (data) => {
+            await setDoc(doc(collection(db, "specs")), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+                jenis: data.jenis,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('specs seeding complete.')
     }
 
     return ( 
         <main className="p-2">
-            <button className="btn btn-primary">Data Perhiasan Seeder</button>
+            {feedback && <div className="alert alert-warning">{feedback}</div>}
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleDataPerhiasanSeeding} disabled={isLoading}>
+                    <span>Data Perhiasan Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleSpecSeeding} disabled={isLoading}>
+                    <span>Specs Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
         </main>
     );
 }

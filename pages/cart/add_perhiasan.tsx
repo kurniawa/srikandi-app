@@ -1,29 +1,48 @@
 import { BaseSyntheticEvent, useEffect, useState } from 'react';
-import Mata from './components/Mata';
-import Mainan from './components/Mainan';
-import WarnaEmas from './components/WarnaEmas';
-import Kondisi from './components/Kondisi';
-import Cap from './components/Cap';
-import TipeBarang from './components/TipeBarang';
+
 import { SessionProvider } from 'next-auth/react';
-import Navbar from '@/pages/components/Navbar';
-import TipePerhiasan from './components/TipePerhiasan';
-import Nama from './components/Nama';
-import KadarBeratHarga from './components/KadarBeratHarga';
-import Deskripsi from './components/Deskripsi';
-import { addProduct } from '../../../lib/addProduct';
-import Plat from './components/Plat';
-import Nampan from './components/Nampan';
-import RangeUsia from './components/RangeUsia';
-import Ukuran from './components/Ukuran';
-import Merk from './components/Merk';
+import NavbarB from '@/pages/components/NavbarB';
 import { redirect, useRouter } from 'next/navigation';
-import JenisPerhiasan from './components/JenisPerhiasan';
+import TipeBarang from '@/pages/products/add/components/TipeBarang';
+import WarnaEmas from '@/pages/products/add/components/WarnaEmas';
+import Kondisi from '@/pages/products/add/components/Kondisi';
+import Cap from '@/pages/products/add/components/Cap';
+import { addProduct } from '@/lib/addProduct';
+import TipePerhiasan from '@/pages/products/add/components/TipePerhiasan';
+import JenisPerhiasan from '@/pages/products/add/components/JenisPerhiasan';
+import KadarBeratHarga from '@/pages/products/add/components/KadarBeratHarga';
+import Nama from '@/pages/products/add/components/Nama';
+import Deskripsi from '@/pages/products/add/components/Deskripsi';
+import RangeUsia from '@/pages/products/add/components/RangeUsia';
+import Ukuran from '@/pages/products/add/components/Ukuran';
+import Merk from '@/pages/products/add/components/Merk';
+import Mata from '@/pages/products/add/components/Mata';
+import Mainan from '@/pages/products/add/components/Mainan';
+import Plat from '@/pages/products/add/components/Plat';
+import Nampan from '@/pages/products/add/components/Nampan';
+import { retrieveAllDataInCollection } from '@/lib/firebase/service';
+import { data_perhiasan } from '@/lib/product_data';
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [redirecting, setRedirecting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [dataPerhiasan, setDataPerhiasan] = useState<{id:string}[]>([]);
+
+  useEffect(() => {
+    // const res = getAllProduct();
+    // console.log('i fire once');
+    const fetchDataPerhiasan = async () => {
+      const res = await retrieveAllDataInCollection('data_perhiasan');
+      setDataPerhiasan(res);
+    }
+    fetchDataPerhiasan();
+  }, [setDataPerhiasan])
+  // console.log(dataPerhiasan);
+
+  const [tipePerhiasan, setTipePerhiasan] = useState('AT');
+
 
   const handleAddProduct = async (e: BaseSyntheticEvent) => {
     setRedirecting(false);
@@ -114,17 +133,17 @@ const AddProductPage = () => {
   return (
     <>
       <SessionProvider>
-        <Navbar></Navbar>
+        <NavbarB></NavbarB>
       </SessionProvider>
       <main className="p-2 mb-52">
         <div>
           <form action="" method="POST" onSubmit={(e) => handleAddProduct(e)}>
             <div className="grid grid-cols-2 gap-2">
               <TipeBarang tipe_barang='perhiasan'></TipeBarang>
-              {/* <TipePerhiasan></TipePerhiasan> */}
+              <TipePerhiasan data_perhiasan={data_perhiasan} setTipePerhiasan={setTipePerhiasan}></TipePerhiasan>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {/* <JenisPerhiasan tipe_perhiasan='perhiasan'></JenisPerhiasan> */}
+              <JenisPerhiasan data_perhiasan={data_perhiasan} tipePerhiasan={tipePerhiasan}></JenisPerhiasan>
               <div></div>
             </div>
             <KadarBeratHarga></KadarBeratHarga>
