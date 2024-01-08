@@ -7,7 +7,7 @@ import TipeBarang from '@/pages/products/add/components/TipeBarang';
 import WarnaEmas from '@/pages/products/add/components/WarnaEmas';
 import Kondisi from '@/pages/products/add/components/Kondisi';
 import Cap from '@/pages/products/add/components/Cap';
-import { addProduct } from '@/lib/addProduct';
+import { addNewPerhiasan } from '@/lib/addNewPerhiasan';
 import TipePerhiasan from '@/pages/products/add/components/TipePerhiasan';
 import JenisPerhiasan from '@/pages/products/add/components/JenisPerhiasan';
 import KadarBeratHarga from '@/pages/products/add/components/KadarBeratHarga';
@@ -22,9 +22,11 @@ import Plat from '@/pages/products/add/components/Plat';
 import Nampan from '@/pages/products/add/components/Nampan';
 import { retrieveAllDataInCollection } from '@/lib/firebase/service';
 import { data_perhiasan } from '@/lib/product_data';
+import Keterangan from '@/pages/products/add/components/Keterangan';
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [redirecting, setRedirecting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +43,10 @@ const AddProductPage = () => {
   }, [setDataPerhiasan])
   // console.log(dataPerhiasan);
 
-  const [tipePerhiasan, setTipePerhiasan] = useState('AT');
+  const [tipePerhiasanTerpilihCodename, setTipePerhiasanTerpilihCodename] = useState('AT');
+  const [tipePerhiasanTerpilihNama, setTipePerhiasanTerpilihNama] = useState('Anting');
+  const [jenisPerhiasanTerpilih, setJenisPerhiasanTerpilih] = useState('');
+
 
 
   const handleAddProduct = async (e: BaseSyntheticEvent) => {
@@ -49,12 +54,16 @@ const AddProductPage = () => {
     setIsLoading(true);
     e.preventDefault();
     setErrorMessage('');
-    const res = await addProduct(e);
+    const res = await addNewPerhiasan(e);
     if (res.status === 400) {
-      setErrorMessage(res.message);
+      setTimeout(() => {
+        setErrorMessage(res.message);
+        setIsLoading(false);
+      }, 1000);
     } else if (res.status === 202) {
       setTimeout(() => {
-        setRedirecting(true)
+        // setRedirecting(true)
+        setSuccessMessage(res.message);
         setIsLoading(false);
       }, 1000);
     }
@@ -140,21 +149,23 @@ const AddProductPage = () => {
           <form action="" method="POST" onSubmit={(e) => handleAddProduct(e)}>
             <div className="grid grid-cols-2 gap-2">
               <TipeBarang tipe_barang='perhiasan'></TipeBarang>
-              <TipePerhiasan data_perhiasan={data_perhiasan} setTipePerhiasan={setTipePerhiasan}></TipePerhiasan>
+              <TipePerhiasan data_perhiasan={data_perhiasan} setTipePerhiasanTerpilihCodename={setTipePerhiasanTerpilihCodename}  setTipePerhiasanTerpilihNama={setTipePerhiasanTerpilihNama} setJenisPerhiasanTerpilih={setJenisPerhiasanTerpilih}></TipePerhiasan>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <JenisPerhiasan data_perhiasan={data_perhiasan} tipePerhiasan={tipePerhiasan}></JenisPerhiasan>
-              <div></div>
+              <JenisPerhiasan data_perhiasan={data_perhiasan} tipePerhiasanTerpilihCodename={tipePerhiasanTerpilihCodename} tipePerhiasanTerpilihNama={tipePerhiasanTerpilihNama} jenisPerhiasanTerpilih={jenisPerhiasanTerpilih} setJenisPerhiasanTerpilih={setJenisPerhiasanTerpilih}></JenisPerhiasan>
+              <Deskripsi></Deskripsi>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <WarnaEmas></WarnaEmas>
             </div>
             <KadarBeratHarga></KadarBeratHarga>
             <Nama></Nama>
-            <Deskripsi></Deskripsi>
+            <Keterangan></Keterangan>
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">
                 <span className='font-bold'>attribute</span>
               </div>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
-                <WarnaEmas></WarnaEmas>
                 <Kondisi></Kondisi>
                 <Cap></Cap>
                 <RangeUsia></RangeUsia>
@@ -249,6 +260,20 @@ const AddProductPage = () => {
             <span>{errorMessage}</span>
           </div>
           <button type='button' className='text-white' onClick={()=>setErrorMessage('')}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        }
+
+        {successMessage && 
+        <div role="alert" className="w-3/4 flex justify-between bg-success p-3 rounded fixed bottom-9 text-white animate-pulse">
+          <div className="flex gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <span>{successMessage}</span>
+          </div>
+          <button type='button' className='text-white' onClick={()=>setSuccessMessage('')}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>

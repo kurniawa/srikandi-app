@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 
 interface JenisPerhiasanProps {
     data_perhiasan: {
@@ -8,20 +8,25 @@ interface JenisPerhiasanProps {
         // id: string,
         jenis: {nama: string, code: number}[],
     }[],
-    tipePerhiasan:string
+    tipePerhiasanTerpilihCodename:string,
+    tipePerhiasanTerpilihNama:string,
+    jenisPerhiasanTerpilih: string,
+    setJenisPerhiasanTerpilih: Dispatch<SetStateAction<string>>
 }
 
-const JenisPerhiasan = ({data_perhiasan, tipePerhiasan}:JenisPerhiasanProps) => {
+const JenisPerhiasan = ({data_perhiasan, tipePerhiasanTerpilihCodename, tipePerhiasanTerpilihNama, jenisPerhiasanTerpilih, setJenisPerhiasanTerpilih}:JenisPerhiasanProps) => {
 
-    const jenis_perhiasan = data_perhiasan.filter((data) => data.codename === tipePerhiasan)[0].jenis;
     const jenis_perhiasan_terpilih = new Array();
-    jenis_perhiasan.forEach(jenis => {
-        jenis_perhiasan_terpilih.push(jenis.nama);
-    });
+    if (data_perhiasan) {
+        const jenis_perhiasan = data_perhiasan.filter((data) => data.codename === tipePerhiasanTerpilihCodename)[0].jenis;
+        
+        jenis_perhiasan.forEach(jenis => {
+            jenis_perhiasan_terpilih.push(jenis.nama);
+        });
+    }
     // console.log(jenis_perhiasan_terpilih);
     const [jenisPerhiasanFiltered, setJenisPerhiasanFiltered] = useState<any>([]);
     const [sudahPilih, setSudahPilih] = useState(false);
-    const [jenisPerhiasanTerpilih, setJenisPerhiasanTerpilih] = useState('');
 
     const handleOninputJenisPerhiasan = (e:ChangeEvent<HTMLInputElement>) => {
         // console.log(e.target.value);
@@ -38,16 +43,16 @@ const JenisPerhiasan = ({data_perhiasan, tipePerhiasan}:JenisPerhiasanProps) => 
     return ( 
         <div className="form-control w-full">
             <div className="label">
-                <span className="label-text font-bold">jenis {tipePerhiasan}</span>
+                <span className="label-text font-bold">jenis {tipePerhiasanTerpilihNama}</span>
             </div>
             <div className="relative">
-                <input className="input input-bordered" name="jenis_perhiasan" onChange={(e) => handleOninputJenisPerhiasan(e)} value={jenisPerhiasanTerpilih}/>
+                <input className="input input-bordered" name="jenis_perhiasan" onChange={(e) => handleOninputJenisPerhiasan(e)} defaultValue={jenisPerhiasanTerpilih} key={jenisPerhiasanTerpilih}/>
                 {(jenisPerhiasanFiltered.length !== 0) ?
                 !sudahPilih &&
                 <div className="absolute top-11 left-2 bg-base-100">
-                    {jenisPerhiasanFiltered.map((jenis:string, index:number) => {
+                    {jenisPerhiasanFiltered && jenisPerhiasanFiltered.map((jenis:string, index:number) => {
                         return (
-                            <div key={index} className="p-2 border border-rose-200 hover:bg-primary" onClick={() => handlePilihJenisPerhiasan(jenis)}>{jenis}</div>
+                            <div key={index} className="p-2 border border-rose-200 hover:bg-primary block" onClick={() => handlePilihJenisPerhiasan(jenis)}>{jenis}</div>
                         )
                     })}
                 </div>

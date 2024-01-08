@@ -11,7 +11,7 @@ import TipePerhiasan from './components/TipePerhiasan';
 import Nama from './components/Nama';
 import KadarBeratHarga from './components/KadarBeratHarga';
 import Deskripsi from './components/Deskripsi';
-import { addProduct } from '../../../lib/addProduct';
+import { addNewPerhiasan } from '../../../lib/addNewPerhiasan';
 import Plat from './components/Plat';
 import Nampan from './components/Nampan';
 import RangeUsia from './components/RangeUsia';
@@ -30,7 +30,7 @@ const AddProductPage = () => {
     setIsLoading(true);
     e.preventDefault();
     setErrorMessage('');
-    const res = await addProduct(e);
+    const res = await addNewPerhiasan(e);
     if (res.status === 400) {
       setErrorMessage(res.message);
     } else if (res.status === 202) {

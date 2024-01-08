@@ -99,7 +99,8 @@ const KadarBeratHarga = () => {
   useEffect(() => {
     if (countHargaT) {
       if (statusBerat === '202' && statusHargaGr === '202') {
-        const harga_total = berat * parseFloat(hargaGr)
+        // const harga_total = Math.round(((berat * parseFloat(hargaGr)) + Number.EPSILON) * 100) / 100;
+        const harga_total = berat * parseFloat(hargaGr);
         // console.log(harga_total);
         setHargaT(harga_total.toString());
         setFormattedHargaT(formatPrice(harga_total * 100))
@@ -112,6 +113,7 @@ const KadarBeratHarga = () => {
     if (countHargaGr) {
       if (statusBerat === '202' && statusHargaT === '202') {
         // console.log('test')
+        // const harga_gr = Math.round(((parseFloat(hargaT) / berat) + Number.EPSILON) * 100) / 100;
         const harga_gr = parseFloat(hargaT) / berat;
         setHargaGr(harga_gr.toString())
         setFormattedHargaGr(formatPrice(harga_gr * 100))

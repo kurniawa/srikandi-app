@@ -224,3 +224,53 @@ export const specs = [
         ]
     }
 ]
+
+export const harga_pasarans = [
+    {
+        golongan_kadar: 'md',
+        harga_gr: 500000,
+        ongkos_cuci_gr: 15000,
+    },
+    {
+        golongan_kadar: 'putih_md',
+        harga_gr: 550000,
+        ongkos_cuci_gr: 25000,
+    },
+    {
+        golongan_kadar: '70',
+        harga_gr: 800000,
+        ongkos_cuci_gr: 25000,
+    },
+    {
+        golongan_kadar: 'putih_75',
+        harga_gr: 850000,
+        ongkos_cuci_gr: 30000,
+    },
+]
+
+export const modal_ongkos_cucis = [
+    {
+        kategori_tipe_perhiasan: 'TP1',
+        kategori_warna_emas: 'WE1',
+        modal_ongkos_cuci: 3000,
+        per: 'barang',
+    },
+    {
+        kategori_tipe_perhiasan: 'TP1',
+        kategori_warna_emas: 'chrome',
+        modal_ongkos_cuci: 7000,
+        per: 'barang',
+    },
+    {
+        kategori_tipe_perhiasan: 'GL',
+        kategori_warna_emas: 'chrome',
+        modal_ongkos_cuci: 10000,
+        per: 'barang',
+    },
+    {
+        kategori_tipe_perhiasan: 'all',
+        kategori_warna_emas: 'putih',
+        modal_ongkos_cuci: 12000,
+        per: 'gram',
+    },
+]
