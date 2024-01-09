@@ -274,3 +274,26 @@ export const modal_ongkos_cucis = [
         per: 'gram',
     },
 ]
+
+export const warna_emas = [
+    {
+        nama: 'kuning',
+        codename: 'kuning',
+        code: '1',
+    },
+    {
+        nama: 'rosegold',
+        codename: 'rosegold',
+        code: '2',
+    },
+    {
+        nama: 'chrome',
+        codename: 'chrome',
+        code: '3',
+    },
+    {
+        nama: 'putih',
+        codename: 'putih',
+        code: '5',
+    },
+]

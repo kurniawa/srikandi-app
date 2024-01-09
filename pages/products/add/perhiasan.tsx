@@ -127,15 +127,15 @@ const AddProductPage = () => {
               {/* <JenisPerhiasan tipe_perhiasan='perhiasan'></JenisPerhiasan> */}
               <div></div>
             </div>
-            <KadarBeratHarga></KadarBeratHarga>
+            {/* <KadarBeratHarga></KadarBeratHarga>
             <Nama></Nama>
-            <Deskripsi></Deskripsi>
+            <Deskripsi></Deskripsi> */}
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">
                 <span className='font-bold'>attribute</span>
               </div>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
-                <WarnaEmas></WarnaEmas>
+                {/* <WarnaEmas></WarnaEmas> */}
                 <Kondisi></Kondisi>
                 <Cap></Cap>
                 <RangeUsia></RangeUsia>

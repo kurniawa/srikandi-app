@@ -21,8 +21,19 @@ import Mainan from '@/pages/products/add/components/Mainan';
 import Plat from '@/pages/products/add/components/Plat';
 import Nampan from '@/pages/products/add/components/Nampan';
 import { retrieveAllDataInCollection } from '@/lib/firebase/service';
-import { data_perhiasan } from '@/lib/product_data';
 import Keterangan from '@/pages/products/add/components/Keterangan';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db } from '@/firebase.config';
+
+// interface dataPerhiasanInterface {
+//   nama: string,
+//   codename: string,
+//   code: number,
+//   jenis: {
+//     nama: string,
+//     code: number
+//   }[]
+// }
 
 const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,14 +41,27 @@ const AddProductPage = () => {
   const [redirecting, setRedirecting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [dataPerhiasan, setDataPerhiasan] = useState<{id:string}[]>([]);
+  const [dataPerhiasan, setDataPerhiasan] = useState<any[]>([]);
 
   useEffect(() => {
     // const res = getAllProduct();
     // console.log('i fire once');
     const fetchDataPerhiasan = async () => {
-      const res = await retrieveAllDataInCollection('data_perhiasan');
-      setDataPerhiasan(res);
+      // const res = await retrieveAllDataInCollection('data_perhiasan');
+      // setDataPerhiasan(res);
+      const warnaEmasRef = collection(db, "data_perhiasan");
+      const q = query(warnaEmasRef, orderBy("nama"));
+      const querySnapshot = await getDocs(q);
+      const data = new Array();
+      querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          data.push({
+              id: doc.id,
+              ...doc.data()
+          });
+      });
+      setDataPerhiasan(data);
     }
     fetchDataPerhiasan();
   }, [setDataPerhiasan])
@@ -46,6 +70,10 @@ const AddProductPage = () => {
   const [tipePerhiasanTerpilihCodename, setTipePerhiasanTerpilihCodename] = useState('AT');
   const [tipePerhiasanTerpilihNama, setTipePerhiasanTerpilihNama] = useState('Anting');
   const [jenisPerhiasanTerpilih, setJenisPerhiasanTerpilih] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
+  const [warnaEmas, setWarnaEmas] = useState('');
+  const [kadar, setKadar] = useState('');
+  const [berat, setBerat] = useState('');
 
 
 
@@ -149,17 +177,17 @@ const AddProductPage = () => {
           <form action="" method="POST" onSubmit={(e) => handleAddProduct(e)}>
             <div className="grid grid-cols-2 gap-2">
               <TipeBarang tipe_barang='perhiasan'></TipeBarang>
-              <TipePerhiasan data_perhiasan={data_perhiasan} setTipePerhiasanTerpilihCodename={setTipePerhiasanTerpilihCodename}  setTipePerhiasanTerpilihNama={setTipePerhiasanTerpilihNama} setJenisPerhiasanTerpilih={setJenisPerhiasanTerpilih}></TipePerhiasan>
+              <TipePerhiasan data_perhiasan={dataPerhiasan} setTipePerhiasanTerpilihCodename={setTipePerhiasanTerpilihCodename} setTipePerhiasanTerpilihNama={setTipePerhiasanTerpilihNama} setJenisPerhiasanTerpilih={setJenisPerhiasanTerpilih}></TipePerhiasan>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <JenisPerhiasan data_perhiasan={data_perhiasan} tipePerhiasanTerpilihCodename={tipePerhiasanTerpilihCodename} tipePerhiasanTerpilihNama={tipePerhiasanTerpilihNama} jenisPerhiasanTerpilih={jenisPerhiasanTerpilih} setJenisPerhiasanTerpilih={setJenisPerhiasanTerpilih}></JenisPerhiasan>
-              <Deskripsi></Deskripsi>
+              <JenisPerhiasan data_perhiasan={dataPerhiasan} tipePerhiasanTerpilihCodename={tipePerhiasanTerpilihCodename} tipePerhiasanTerpilihNama={tipePerhiasanTerpilihNama} jenisPerhiasanTerpilih={jenisPerhiasanTerpilih} setJenisPerhiasanTerpilih={setJenisPerhiasanTerpilih}></JenisPerhiasan>
+              <Deskripsi setDeskripsi={setDeskripsi}></Deskripsi>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <WarnaEmas></WarnaEmas>
+              <WarnaEmas setWarnaEmas={setWarnaEmas}></WarnaEmas>
             </div>
-            <KadarBeratHarga></KadarBeratHarga>
-            <Nama></Nama>
+            <KadarBeratHarga setKadar={setKadar} setBerat={setBerat}></KadarBeratHarga>
+            <Nama tipePerhiasan={tipePerhiasanTerpilihNama} jenisPerhiasan={jenisPerhiasanTerpilih} deskripsi={deskripsi} warnaEmas={warnaEmas} kadar={kadar} berat={berat}></Nama>
             <Keterangan></Keterangan>
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">

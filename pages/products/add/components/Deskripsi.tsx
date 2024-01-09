@@ -1,5 +1,15 @@
-const Deskripsi = () => {
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+
+interface deskripsiProps {
+    setDeskripsi: Dispatch<SetStateAction<string>>
+}
+
+const Deskripsi = ({setDeskripsi}:deskripsiProps) => {
     
+    const handleInputDeskripsi = (e:ChangeEvent<HTMLInputElement>) => {
+        setDeskripsi(e.target.value);
+    }
+
     return ( 
         <div className="form-control w-full">
             <div className="label">
@@ -11,6 +21,7 @@ const Deskripsi = () => {
               placeholder="deskripsi..."
               name="deskripsi"
               className="input input-bordered input-sm w-full"
+              onChange={(e)=>handleInputDeskripsi(e)}
             />
             </div>
         </div>

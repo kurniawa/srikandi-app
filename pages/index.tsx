@@ -20,30 +20,16 @@ interface productInterface {
 export default function Home() {
 
   const [products, setProducts] = useState<productInterface[]>();
-  const [runGetProducts, setRunGetProducts] = useState(true);
 
-  const getAllProduct = async () => {
-    if (runGetProducts) {
+  useEffect(() => {
+    // const res = getAllProduct();
+    async function fetchAllProduct() {
       const res = await retrieveAllDataInCollection('products');
-      setProducts(res);
-      console.log(products);
-      setTimeout(() => {
-        setRunGetProducts(false);
-      }, 500);
+      setProducts(res)
     }
-    // return res;
-  }
+    fetchAllProduct();
+  }, [setProducts])
 
-  // useEffect(() => {
-  //   // const res = getAllProduct();
-  //   async function fetchAllProduct() {
-  //     const res = await retrieveAllDataInCollection('products');
-  //     return res
-  //   }
-  //   setProducts(fetchAllProduct());
-  // }, [setProducts])
-
-  getAllProduct();
 
   return (
     <>

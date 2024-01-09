@@ -1,10 +1,15 @@
 import formatPrice from "@/lib/format";
-import { BaseSyntheticEvent, useEffect, useState } from "react";
+import { BaseSyntheticEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 import Kadar from "./Kadar";
 
-const KadarBeratHarga = () => {
+interface KadarBeratHargaProps {
+  setKadar: Dispatch<SetStateAction<string>>
+  setBerat: Dispatch<SetStateAction<string>>
+}
+
+const KadarBeratHarga = ({setKadar, setBerat}:KadarBeratHargaProps) => {
   // FUNGSI BERAT
-  const [berat, setBerat] = useState(0.00);
+  const [berat, setBeratThis] = useState(0.00);
   const [errorBerat, setErrorBerat] = useState('');
   const [statusBerat, setStatusBerat] = useState('406'); // not accepted
   
@@ -22,8 +27,9 @@ const KadarBeratHarga = () => {
       setStatusBerat('406')
       return
     } else {
-      const float_berat = parseFloat(berat_val)
-      setBerat(float_berat);
+      const float_berat = parseFloat(berat_val);
+      setBerat(berat_val);
+      setBeratThis(float_berat);
       setErrorBerat('')
       setStatusBerat('202')
       // countHargaTotal()
@@ -127,7 +133,7 @@ const KadarBeratHarga = () => {
     return (
       <>
         <div className="grid grid-cols-2 gap-2">
-          <Kadar></Kadar>
+          <Kadar setKadar={setKadar}></Kadar>
           <div className="form-control w-full">
             <div className="label">
               <span className="label-text font-bold">berat(gr.)</span>

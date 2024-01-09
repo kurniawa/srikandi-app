@@ -62,12 +62,15 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
     return {status: 400, message: 'harga_t?'};
   }
 
-  const nama = e.target.nama.value.trim();
-  if (nama === '') {
+  const nama_long = e.target.nama_long.value.trim();
+  if (nama_long === '') {
     return {status: 400, message: 'Nama barang?'};
   }
 
-  
+  const nama_short = e.target.nama_short.value.trim();
+  if (nama_short === '') {
+    return {status: 400, message: 'Nama barang?'};
+  }
 
   const warna_emas = e.target.warna_emas.value;
   const kondisi = e.target.kondisi.value;
@@ -230,7 +233,7 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
   const stock = 1;
 
   // cari terlebih dahulu, apakah ada barang yang sama?
-  const q = query(collection(db, "perhiasans"), where("nama", "==", nama));
+  const q = query(collection(db, "perhiasans"), where("nama_long", "==", nama_long));
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
@@ -254,7 +257,8 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
     deskripsi: deskripsi,
     kadar: kadar,
     berat: berat,
-    nama: nama,
+    nama_long: nama_long,
+    nama_short: nama_short,
     warna_emas: warna_emas,
     harga_gr: harga_gr, // meskipun harga dapat berubah sewaktu-waktu, tergantung harga pasaran, tapi tetap lebih baik tercatat disini juga.
     harga_t: harga_t,

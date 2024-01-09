@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 interface JenisPerhiasanProps {
     data_perhiasan: {
@@ -17,8 +17,12 @@ interface JenisPerhiasanProps {
 const JenisPerhiasan = ({data_perhiasan, tipePerhiasanTerpilihCodename, tipePerhiasanTerpilihNama, jenisPerhiasanTerpilih, setJenisPerhiasanTerpilih}:JenisPerhiasanProps) => {
 
     const jenis_perhiasan_terpilih = new Array();
-    if (data_perhiasan) {
+    // console.log(data_perhiasan);
+    // console.log(tipePerhiasanTerpilihCodename);
+    if (data_perhiasan && data_perhiasan.length !== 0) {
         const jenis_perhiasan = data_perhiasan.filter((data) => data.codename === tipePerhiasanTerpilihCodename)[0].jenis;
+
+        // console.log(jenis_perhiasan);
         
         jenis_perhiasan.forEach(jenis => {
             jenis_perhiasan_terpilih.push(jenis.nama);
@@ -59,22 +63,6 @@ const JenisPerhiasan = ({data_perhiasan, tipePerhiasanTerpilihCodename, tipePerh
                 : ''
                 }
             </div>
-            {/* <select
-            className="select select-bordered select-sm"
-            name="tipe_perhiasan"
-            >
-                {jenis_perhiasan.map((jenis) => {
-                    return (
-                        <option value={jenis.nama} key={jenis.code}>{jenis.nama}</option>
-                    )
-                })} */}
-                {/* <option value={'GW'}>GW</option>
-                <option value={'CC'}>CC</option>
-                <option value={'GLR'}>GLR</option>
-                <option value={'GLB'}>GLB</option>
-                <option value={'KL'}>KL</option>
-                <option value={'Lion'}>Lion</option> */}
-            {/* </select> */}
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { db } from "@/firebase.config";
 import { retrieveAllDataInCollection } from "@/lib/firebase/service";
-import { data_perhiasan, harga_pasarans, modal_ongkos_cucis, specs } from "@/lib/product_data";
+import { data_perhiasan, harga_pasarans, modal_ongkos_cucis, specs, warna_emas } from "@/lib/product_data";
 import { collection, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
@@ -95,6 +95,27 @@ const Seeder = () => {
         setFeedback('modal_ongkos_cucis seeding complete.')
     }
 
+    const handleWarnaEmasSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_warna_emas = await retrieveAllDataInCollection('warna_emas');
+        avalaible_warna_emas.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'warna_emas', data.id));
+        });
+        warna_emas.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'warna_emas')), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('warna_emas seeding complete.')
+    }
+
     return ( 
         <main className="p-2">
             {feedback && <div className="alert alert-warning">{feedback}</div>}
@@ -122,7 +143,14 @@ const Seeder = () => {
 
             <div className="mt-2">
                 <button className="btn btn-primary" onClick={handleModalOngkosCuciSeeding} disabled={isLoading}>
-                    <span>Modal Ongkos Cuci</span>
+                    <span>Modal Ongkos Cuci Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleWarnaEmasSeeding} disabled={isLoading}>
+                    <span>Warna Emas Seeder</span>
                     {isLoading && <span className="loading loading-spinner"></span>}
                 </button>
             </div>
