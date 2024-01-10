@@ -13,7 +13,7 @@ const WarnaEmas = ({setWarnaEmas}:WarnaEmasProps) => {
     useEffect(() => {
         const fetchWarnaEmas = async () => {
             const warnaEmasRef = collection(db, "warna_emas");
-            const q = query(warnaEmasRef, orderBy("code"));
+            const q = query(warnaEmasRef, orderBy('code'));
             const querySnapshot = await getDocs(q);
             const data = new Array();
             querySnapshot.forEach((doc) => {
@@ -24,6 +24,7 @@ const WarnaEmas = ({setWarnaEmas}:WarnaEmasProps) => {
                     ...doc.data()
                 });
             });
+            // console.log(data);
             setWarnaEmasThis(data);
             setWarnaEmas(data[0].nama);
             // console.log(data);

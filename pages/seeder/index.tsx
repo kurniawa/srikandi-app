@@ -1,6 +1,6 @@
 import { db } from "@/firebase.config";
 import { retrieveAllDataInCollection } from "@/lib/firebase/service";
-import { data_perhiasan, harga_pasarans, modal_ongkos_cucis, specs, warna_emas } from "@/lib/product_data";
+import { caps, data_perhiasan, harga_pasarans, mainans, merks, modal_ongkos_cucis, opacity_warna_permatas, saturasi_warna_permatas, warna_emas, warna_permatas } from "@/lib/product_data";
 import { collection, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
@@ -28,28 +28,6 @@ const Seeder = () => {
         // END - USER SEEDING
         setIsLoading(false);
         setFeedback('data_perhiasan seeding complete.')
-    }
-
-    const handleSpecSeeding = async () => {
-        setIsLoading(true);
-        setFeedback('');
-        // USER SEEDING
-        const avalaible_specs = await retrieveAllDataInCollection('specs');
-        avalaible_specs.forEach(async (data:any) => {
-            // console.log(user);
-            await deleteDoc(doc(db, "specs", data.id));
-        });
-        specs.forEach(async (data) => {
-            await setDoc(doc(collection(db, "specs")), {
-                nama: data.nama,
-                codename: data.codename,
-                code: data.code,
-                jenis: data.jenis,
-            });
-        });
-        // END - USER SEEDING
-        setIsLoading(false);
-        setFeedback('specs seeding complete.')
     }
 
     const handleHargaPasaranSeeding = async () => {
@@ -116,6 +94,134 @@ const Seeder = () => {
         setFeedback('warna_emas seeding complete.')
     }
 
+    const handleWarnaPermataSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_warna_permatas = await retrieveAllDataInCollection('warna_permatas');
+        avalaible_warna_permatas.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'warna_permatas', data.id));
+        });
+        warna_permatas.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'warna_permatas')), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('warna_permatas seeding complete.')
+    }
+
+    const handleSaturasiWarnaPermataSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_saturasi_warna_permatas = await retrieveAllDataInCollection('saturasi_warna_permatas');
+        avalaible_saturasi_warna_permatas.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'saturasi_warna_permatas', data.id));
+        });
+        saturasi_warna_permatas.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'saturasi_warna_permatas')), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('saturasi_warna_permatas seeding complete.')
+    }
+
+    const handleOpacityWarnaPermataSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_opacity_warna_permatas = await retrieveAllDataInCollection('opacity_warna_permatas');
+        avalaible_opacity_warna_permatas.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'opacity_warna_permatas', data.id));
+        });
+        opacity_warna_permatas.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'opacity_warna_permatas')), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('opacity_warna_permatas seeding complete.')
+    }
+
+    const handleMainanSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_mainans = await retrieveAllDataInCollection('mainans');
+        avalaible_mainans.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'mainans', data.id));
+        });
+        mainans.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'mainans')), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('mainans seeding complete.')
+    }
+
+    const handleCapSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_caps = await retrieveAllDataInCollection('caps');
+        avalaible_caps.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'caps', data.id));
+        });
+        caps.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'caps')), {
+                nama: data.nama,
+                codename: data.codename,
+                code: data.code,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('caps seeding complete.')
+    }
+
+    const handleMerkSeeding = async () => {
+        setIsLoading(true);
+        setFeedback('');
+        // USER SEEDING
+        const avalaible_merks = await retrieveAllDataInCollection('merks');
+        avalaible_merks.forEach(async (data:any) => {
+            // console.log(user);
+            await deleteDoc(doc(db, 'merks', data.id));
+        });
+        merks.forEach(async (data) => {
+            await setDoc(doc(collection(db, 'merks')), {
+                nama: data.nama,
+                codename: data.codename,
+                short: data.short,
+                code: data.code,
+                edisi: data.edisi,
+            });
+        });
+        // END - USER SEEDING
+        setIsLoading(false);
+        setFeedback('merks seeding complete.')
+    }
+
     return ( 
         <main className="p-2">
             {feedback && <div className="alert alert-warning">{feedback}</div>}
@@ -128,8 +234,50 @@ const Seeder = () => {
             </div>
 
             <div className="mt-2">
-                <button className="btn btn-primary" onClick={handleSpecSeeding} disabled={isLoading}>
-                    <span>Specs Seeder</span>
+                <button className="btn btn-primary" onClick={handleWarnaEmasSeeding} disabled={isLoading}>
+                    <span>Warna Emas Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleWarnaPermataSeeding} disabled={isLoading}>
+                    <span>Warna Permata Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleSaturasiWarnaPermataSeeding} disabled={isLoading}>
+                    <span>Saturasi Warna Permata Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleOpacityWarnaPermataSeeding} disabled={isLoading}>
+                    <span>Opacity Warna Permata Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleMainanSeeding} disabled={isLoading}>
+                    <span>Mainan Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleCapSeeding} disabled={isLoading}>
+                    <span>Cap Seeder</span>
+                    {isLoading && <span className="loading loading-spinner"></span>}
+                </button>
+            </div>
+
+            <div className="mt-2">
+                <button className="btn btn-primary" onClick={handleMerkSeeding} disabled={isLoading}>
+                    <span>Merk Seeder</span>
                     {isLoading && <span className="loading loading-spinner"></span>}
                 </button>
             </div>
@@ -144,13 +292,6 @@ const Seeder = () => {
             <div className="mt-2">
                 <button className="btn btn-primary" onClick={handleModalOngkosCuciSeeding} disabled={isLoading}>
                     <span>Modal Ongkos Cuci Seeder</span>
-                    {isLoading && <span className="loading loading-spinner"></span>}
-                </button>
-            </div>
-
-            <div className="mt-2">
-                <button className="btn btn-primary" onClick={handleWarnaEmasSeeding} disabled={isLoading}>
-                    <span>Warna Emas Seeder</span>
                     {isLoading && <span className="loading loading-spinner"></span>}
                 </button>
             </div>

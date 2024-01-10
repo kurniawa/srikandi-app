@@ -24,6 +24,7 @@ import { retrieveAllDataInCollection } from '@/lib/firebase/service';
 import Keterangan from '@/pages/products/add/components/Keterangan';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '@/firebase.config';
+import NamaShort from '../products/add/components/NamaShort';
 
 // interface dataPerhiasanInterface {
 //   nama: string,
@@ -74,8 +75,6 @@ const AddProductPage = () => {
   const [warnaEmas, setWarnaEmas] = useState('');
   const [kadar, setKadar] = useState('');
   const [berat, setBerat] = useState('');
-
-
 
   const handleAddProduct = async (e: BaseSyntheticEvent) => {
     setRedirecting(false);
@@ -188,6 +187,7 @@ const AddProductPage = () => {
             </div>
             <KadarBeratHarga setKadar={setKadar} setBerat={setBerat}></KadarBeratHarga>
             <Nama tipePerhiasan={tipePerhiasanTerpilihNama} jenisPerhiasan={jenisPerhiasanTerpilih} deskripsi={deskripsi} warnaEmas={warnaEmas} kadar={kadar} berat={berat}></Nama>
+            <NamaShort tipePerhiasan={tipePerhiasanTerpilihNama} jenisPerhiasan={jenisPerhiasanTerpilih} deskripsi={deskripsi} warnaEmas={warnaEmas}></NamaShort>
             <Keterangan></Keterangan>
             <div className="border-2 border-primary rounded p-1 mt-2">
               <div className="flex justify-center">

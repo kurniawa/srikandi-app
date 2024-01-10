@@ -12,7 +12,7 @@ interface namaProps {
 const Nama = ({tipePerhiasan, jenisPerhiasan, deskripsi, warnaEmas, kadar, berat}:namaProps) => {
 
   const [namaLong, setNamaLong] = useState('');
-  const [namaShort, setNamaShort] = useState('');
+  // const [namaShort, setNamaShort] = useState('');
 
   useEffect(() => {
     let namaLongThis = `${tipePerhiasan} ${jenisPerhiasan}`;
@@ -26,8 +26,8 @@ const Nama = ({tipePerhiasan, jenisPerhiasan, deskripsi, warnaEmas, kadar, berat
       namaLongThis += ` (emas ${warnaEmas})`;
     }
     setNamaLong(`${namaLongThis} k:${kadar}% ${berat}g`);
-    setNamaShort(namaShortThis);
-  },[tipePerhiasan, jenisPerhiasan, deskripsi, warnaEmas, kadar, berat, setNamaLong, setNamaShort]);
+    // setNamaShort(namaShortThis);
+  },[tipePerhiasan, jenisPerhiasan, deskripsi, warnaEmas, kadar, berat, setNamaLong]);
 
   return ( 
       <div className="form-control w-full">
@@ -41,13 +41,6 @@ const Nama = ({tipePerhiasan, jenisPerhiasan, deskripsi, warnaEmas, kadar, berat
           className="input input-bordered input-sm w-full"
           defaultValue={namaLong}
           key={namaLong}
-        />
-        <input
-          type="hidden"
-          placeholder="nama..."
-          name="nama_short"
-          defaultValue={namaShort}
-          key={namaShort}
         />
       </div> 
   );

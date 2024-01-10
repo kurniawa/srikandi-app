@@ -2,6 +2,7 @@ import { db } from "@/firebase.config";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { BaseSyntheticEvent } from "react";
 import { retrieveAllDataInCollection } from "./firebase/service";
+import firebase from "firebase/compat/app";
 
 export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
 
@@ -177,17 +178,19 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
     }
   }
 
-  let jumlah_plat = e.target.jumlah_plat;
-  // console.log(jumlah_plat)
-  if (jumlah_plat) {
-    jumlah_plat = e.target.jumlah_plat.value;
-    if (jumlah_plat === '' || isNaN(jumlah_plat)) {
-      return {status: 400, message: 'jumlah_plat exist, but format?'};
+  let plat = e.target.plat;
+  // console.log(plat)
+  if (plat) {
+    plat = e.target.plat.value;
+    if (plat === '' || plat === 0 || isNaN(plat)) {
+      return {status: 400, message: 'plat exist, but format?'};
+    } else {
+      plat = parseInt(plat);
     }
   } else {
-    jumlah_plat = null;
+    plat = null;
   }
-  // console.log(jumlah_plat)
+  // console.log(plat)
 
   let nampan = e.target.nampan;
   // console.log(nampan)
@@ -233,16 +236,29 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
   const stock = 1;
 
   // cari terlebih dahulu, apakah ada barang yang sama?
-  const q = query(collection(db, "perhiasans"), where("nama_long", "==", nama_long));
+  let arr_conditions = [];
+  arr_conditions.push(where("nama_long", "==", nama_long));
+  arr_conditions.push(where("range_usia", "==", range_usia));
+  arr_conditions.push(where("data_mata", "==", data_mata));
+  arr_conditions.push(where("data_mainan", "==", data_mainan));
+  arr_conditions.push(where("plat", "==", plat));
+  arr_conditions.push(where("cap", "==", cap));
+  arr_conditions.push(where("ukuran", "==", ukuran));
+  arr_conditions.push(where("kondisi", "==", kondisi));
+  arr_conditions.push(where("merk", "==", merk));
+  let q = query(collection(db, "perhiasans"), ...arr_conditions);
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
-    let ava_namas = '';
+    const found_items = <any>[];
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      ava_namas += `- ${doc.data().nama} -`;
+      found_items.push({
+        id: doc.id,
+        ...doc.data()
+      });
     });
-    return {status: 400, message: `nama barang sudah ada! ${ava_namas}`}
+    return {status: 400, message: 'barang sudah ada!', found_items: found_items}
   }
 
   let keterangan = e.target.keterangan.value;
@@ -250,7 +266,35 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
     keterangan = null;
   }
 
-  console.log({
+  // console.log({
+  //   tipe_barang: tipe_barang,
+  //   tipe_perhiasan: tipe_perhiasan,
+  //   jenis_perhiasan: jenis_perhiasan,
+  //   deskripsi: deskripsi,
+  //   kadar: kadar,
+  //   berat: berat,
+  //   nama_long: nama_long,
+  //   nama_short: nama_short,
+  //   warna_emas: warna_emas,
+  //   harga_gr: harga_gr, // meskipun harga dapat berubah sewaktu-waktu, tergantung harga pasaran, tapi tetap lebih baik tercatat disini juga.
+  //   harga_t: harga_t,
+  //   range_usia: range_usia,
+  //   data_mata: data_mata,
+  //   data_mainan: data_mainan,
+  //   plat: plat,
+  //   cap: cap,
+  //   ukuran: ukuran,
+  //   nampan: nampan,
+  //   merk: merk,
+  //   edisi: edisi,
+  //   kondisi: kondisi,
+  //   status: status,
+  //   stock: stock,
+  //   barcode: barcode,
+  //   keterangan: keterangan,
+  // });
+
+  await setDoc(doc(collection(db, "perhiasans")), {
     tipe_barang: tipe_barang,
     tipe_perhiasan: tipe_perhiasan,
     jenis_perhiasan: jenis_perhiasan,
@@ -265,7 +309,7 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
     range_usia: range_usia,
     data_mata: data_mata,
     data_mainan: data_mainan,
-    jumlah_plat: jumlah_plat,
+    plat: plat,
     cap: cap,
     ukuran: ukuran,
     nampan: nampan,
@@ -277,31 +321,6 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
     barcode: barcode,
     keterangan: keterangan,
   });
-
-  // await setDoc(doc(collection(db, "products")), {
-  //   tipe_barang: tipe_barang,
-  //   tipe_perhiasan: tipe_perhiasan,
-  //   jenis_perhiasan: jenis_perhiasan,
-  //   deskripsi: deskripsi,
-  //   range_usia: range_usia,
-  //   warna_emas: warna_emas,
-  //   data_mata: data_mata,
-  //   data_mainan: data_mainan,
-  //   jumlah_plat: jumlah_plat,
-  //   cap: cap,
-  //   ukuran: ukuran,
-  //   nampan: nampan,
-  //   merk: merk,
-  //   edisi: edisi,
-  //   kadar: kadar,
-  //   berat: berat,
-  //   kondisi: kondisi,
-  //   nama: nama,
-  //   status: status,
-  //   stock: stock,
-  //   barcode: barcode,
-  //   keterangan: keterangan,
-  // });
 
   // // redirect('/products')
 

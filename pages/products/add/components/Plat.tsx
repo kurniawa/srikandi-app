@@ -6,9 +6,10 @@ const Plat = () => {
             </div>
             <input
                 type="number"
-                placeholder="jumlah_plat..."
-                name="jumlah_plat"
+                placeholder="plat..."
+                name="plat"
                 className="input input-bordered input-sm w-full"
+                min={0}
             />
         </div>
      );

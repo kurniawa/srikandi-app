@@ -127,103 +127,104 @@ export const data_perhiasan = [
     },
 ]
 
-export const specs = [
+
+export const warna_emas = [
     {
-        nama: 'Warna Emas', codename: 'warna_emas', code: 1,
-        jenis: [
-            {nama: 'kuning', code: 1},
-            {nama: 'merah', code: 2},
-            {nama: 'chrome', code: 3},
-            {nama: 'putih', code: 5},
-        ]
+        nama: 'kuning',
+        codename: 'kuning',
+        code: '1',
     },
     {
-        nama: 'Warna Permata', codename: 'warna_permata', code: 2,
-        jenis: [
-            {nama: 'biru', codename:'mb', code: 1},
-            {nama: 'coklat', codename:'mc', code: 2},
-            {nama: 'hijau', codename:'mhij.', code: 3},
-            {nama: 'hitam', codename:'mhit.', code: 5},
-            {nama: 'kuning', codename:'mk', code: 6},
-            {nama: 'merah', codename:'mm', code: 7},
-            {nama: 'orange', codename:'mo', code: 8},
-            {nama: 'pink', codename:'mpink', code: 9},
-            {nama: 'putih', codename:'mp', code: 11},
-            {nama: 'ungu', codename:'mu', code: 12},
-        ]
+        nama: 'rosegold',
+        codename: 'rosegold',
+        code: '2',
     },
     {
-        nama: 'Saturasi Warna Permata', codename: 'saturasi_warna_permata', code: 3,
-        jenis: [
-            {nama: 'netral', codename:'netral', short:'netral', code: 1},
-            {nama: 'tua', codename:'tua', short:'tua', code: 2},
-            {nama: 'muda', codename:'muda', short:'muda', code: 3},
-        ]
+        nama: 'chrome',
+        codename: 'chrome',
+        code: '3',
     },
     {
-        nama: 'Opacity Warna Permata', codename: 'opacity_warna_permata', code: 5,
-        jenis: [
-            {nama: 'transparent', codename:'t', short:'t', code: 1},
-            {nama: 'non-transparent', codename:'nt', short:'nt', code: 2},
-            {nama: 'half-transparent', codename: 'ht', short:'ht', code: 3},
-        ]
+        nama: 'putih',
+        codename: 'putih',
+        code: '5',
     },
-    {
-        nama: 'Mainan', codename: 'mainan', code: 6,
-        jenis: [
-            {nama: 'Bola', codename: 'bola', short:'bola', code: 1},
-            {nama: 'Dora', codename: 'dora', short:'dora', code: 2},
-            {nama: 'Hello Kitty', codename: 'hello_kitty', short:'hello_kitty', code: 3},
-            {nama: 'Lonceng', codename: 'lonceng', short:'lonceng', code: 5},
-            {nama: 'Pattrick', codename: 'pattrick', short:'pattrick', code: 7},
-            {nama: 'SpongeBob', codename: 'spongebob', short:'spongebob', code: 8},
-        ]
-    },
-    {
-        nama: 'Cap', codename: 'cap', code: 7,
-        jenis: [
-            {nama: '3', codename: '3', short:'3', code: 1},
-            {nama: '300', codename: '300', short:'300', code: 2},
-            {nama: '375', codename: '375', short:'375', code: 3},
-            {nama: '8K', codename: '8K', short:'8K', code: 5},
-            {nama: 'A', codename: 'A', short:'A', code: 6},
-            {nama: 'A33', codename: 'A33', short:'A33', code: 7},
-            {nama: 'AYU', codename: 'AYU', short:'AYU', code: 8},
-            {nama: 'B', codename: 'B', short:'B', code: 9},
-            {nama: 'HT300', codename: 'HT300', short:'HT300', code: 11},
-            {nama: 'J', codename: 'J', short:'J', code: 12},
-            {nama: 'KY', codename: 'KY', short:'KY', code: 13},
-            {nama: 'N', codename: 'N', short:'N', code: 15},
-            {nama: 'NX', codename: 'NX', short:'NX', code: 16},
-            {nama: 'O', codename: 'O', short:'O', code: 17},
-            {nama: 'STM', codename: 'STM', short:'STM', code: 18},
-            {nama: 'Simbol Check', codename: 's_check', short:'s_check', code: 19},
-            {nama: 'Simbol Bintang-Bintang', codename: 's_bintang2', short:'s_bintang2', code: 21},
-            {nama: 'Simbol Bintang Bulan', codename: 's_bintang_bulan', short:'s_bintang_bulan', code: 22},
-            {nama: 'Simbol Roaster', codename: 's_roaster', short:'s_roaster', code: 23},
-            {nama: 'Simbol S Bintang', codename: 's_s_bintang', short:'s_s_bintang', code: 25},
-        ]
-    },
-    {
-        nama: 'Merek', codename: 'merek', code: 8,
-        jenis: [
-            {
-                nama: 'Antam', codename: 'antam', short:'antam', code: 1,
-                edisi: [
-                    {nama:'Retro', codename:'retro', short: 'retro', tahun:2015, code: 1},
-                    {nama:'Certieye', codename:'certi', short: 'certi', tahun:2018, code: 2},
-                    {nama:'Certieye', codename:'certi', short: 'certi', tahun:2019, code: 3},
-                    {nama:'Certieye', codename:'certi', short: 'certi', tahun:2020, code: 5},
-                    {nama:'Certieye', codename:'certi', short: 'certi', tahun:2021, code: 6},
-                    {nama:'Certieye Redmark', codename:'certiRM', short: 'certiRM', tahun:2022, code: 7},
-                    {nama:'Certieye Redmark', codename:'certiRM', short: 'certiRM', tahun:2023, code: 8},
-                    {nama:'Certieye Redmark', codename:'certiRM', short: 'certiRM', tahun:2024, code: 9},
-                ]
-            },
-            {nama: 'UBS', codename: 'UBS', short:'UBS', code: 2},
-        ]
-    }
 ]
+
+export const warna_permatas = [
+    {nama: 'biru', codename:'mb', code: 1},
+    {nama: 'coklat', codename:'mc', code: 2},
+    {nama: 'hijau', codename:'mhij.', code: 3},
+    {nama: 'hitam', codename:'mhit.', code: 5},
+    {nama: 'kuning', codename:'mk', code: 6},
+    {nama: 'merah', codename:'mm', code: 7},
+    {nama: 'orange', codename:'mo', code: 8},
+    {nama: 'pink', codename:'mpink', code: 9},
+    {nama: 'putih', codename:'mp', code: 11},
+    {nama: 'ungu', codename:'mu', code: 12},
+]
+
+export const saturasi_warna_permatas = [
+    {nama: 'netral', codename:'netral', short:'netral', code: 1},
+    {nama: 'tua', codename:'tua', short:'tua', code: 2},
+    {nama: 'muda', codename:'muda', short:'muda', code: 3},
+]
+
+export const opacity_warna_permatas = [
+    {nama: 'transparent', codename:'t', short:'t', code: 1},
+    {nama: 'non-transparent', codename:'nt', short:'nt', code: 2},
+    {nama: 'half-transparent', codename: 'ht', short:'ht', code: 3},
+]
+
+export const mainans = [
+    {nama: 'Bola', codename: 'bola', short:'bola', code: 1},
+    {nama: 'Dora', codename: 'dora', short:'dora', code: 2},
+    {nama: 'Hello Kitty', codename: 'hello_kitty', short:'hello_kitty', code: 3},
+    {nama: 'Lonceng', codename: 'lonceng', short:'lonceng', code: 5},
+    {nama: 'Pattrick', codename: 'pattrick', short:'pattrick', code: 7},
+    {nama: 'SpongeBob', codename: 'spongebob', short:'spongebob', code: 8},
+]
+
+export const caps = [
+    {nama: '3', codename: '3', short:'3', code: 1},
+    {nama: '300', codename: '300', short:'300', code: 2},
+    {nama: '375', codename: '375', short:'375', code: 3},
+    {nama: '8K', codename: '8K', short:'8K', code: 5},
+    {nama: 'A', codename: 'A', short:'A', code: 6},
+    {nama: 'A33', codename: 'A33', short:'A33', code: 7},
+    {nama: 'AYU', codename: 'AYU', short:'AYU', code: 8},
+    {nama: 'B', codename: 'B', short:'B', code: 9},
+    {nama: 'HT300', codename: 'HT300', short:'HT300', code: 11},
+    {nama: 'J', codename: 'J', short:'J', code: 12},
+    {nama: 'KY', codename: 'KY', short:'KY', code: 13},
+    {nama: 'N', codename: 'N', short:'N', code: 15},
+    {nama: 'NX', codename: 'NX', short:'NX', code: 16},
+    {nama: 'O', codename: 'O', short:'O', code: 17},
+    {nama: 'STM', codename: 'STM', short:'STM', code: 18},
+    {nama: 'Simbol Check', codename: 's_check', short:'s_check', code: 19},
+    {nama: 'Simbol Bintang-Bintang', codename: 's_bintang2', short:'s_bintang2', code: 21},
+    {nama: 'Simbol Bintang Bulan', codename: 's_bintang_bulan', short:'s_bintang_bulan', code: 22},
+    {nama: 'Simbol Roaster', codename: 's_roaster', short:'s_roaster', code: 23},
+    {nama: 'Simbol S Bintang', codename: 's_s_bintang', short:'s_s_bintang', code: 25},
+]
+
+export const merks = [
+    {
+        nama: 'Antam', codename: 'antam', short:'antam', code: 1,
+        edisi: [
+            {nama:'Retro', codename:'retro', short: 'retro', tahun:2015, code: 1},
+            {nama:'Certieye', codename:'certi', short: 'certi', tahun:2018, code: 2},
+            {nama:'Certieye', codename:'certi', short: 'certi', tahun:2019, code: 3},
+            {nama:'Certieye', codename:'certi', short: 'certi', tahun:2020, code: 5},
+            {nama:'Certieye', codename:'certi', short: 'certi', tahun:2021, code: 6},
+            {nama:'Certieye Redmark', codename:'certiRM', short: 'certiRM', tahun:2022, code: 7},
+            {nama:'Certieye Redmark', codename:'certiRM', short: 'certiRM', tahun:2023, code: 8},
+            {nama:'Certieye Redmark', codename:'certiRM', short: 'certiRM', tahun:2024, code: 9},
+        ]
+    },
+    {nama: 'UBS', codename: 'UBS', short:'UBS', code: 2, edisi:null},
+]
+
 
 export const harga_pasarans = [
     {
@@ -275,25 +276,3 @@ export const modal_ongkos_cucis = [
     },
 ]
 
-export const warna_emas = [
-    {
-        nama: 'kuning',
-        codename: 'kuning',
-        code: '1',
-    },
-    {
-        nama: 'rosegold',
-        codename: 'rosegold',
-        code: '2',
-    },
-    {
-        nama: 'chrome',
-        codename: 'chrome',
-        code: '3',
-    },
-    {
-        nama: 'putih',
-        codename: 'putih',
-        code: '5',
-    },
-]
