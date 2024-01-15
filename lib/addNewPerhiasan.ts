@@ -16,7 +16,7 @@ export const addNewPerhiasan = async (e: BaseSyntheticEvent) => {
   }
 
   let deskripsi = e.target.deskripsi.value.trim();
-  if (deskripsi = '') {
+  if (deskripsi === '') {
     deskripsi = null;
   }
 

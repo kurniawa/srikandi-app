@@ -117,6 +117,55 @@ const AddProductPage = () => {
     }
     // console.log(el.target);
   };
+  // FUNGSI MATA
+  const [PilihanWarnaMata, setPilihanWarnaMata] = useState<any[]>([]);
+  const [PilihanOpacity, setPilihanOpacity] = useState<any[]>([]);
+  const [PilihanSaturasi, setPilihanSaturasi] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDataMata = async () => {
+      const warnaMataRef = collection(db, 'warna_permatas');
+      const q = query(warnaMataRef, orderBy('code'));
+      const querySnapshot = await getDocs(q);
+      const data = new Array();
+      querySnapshot.forEach((doc) => {
+        data.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      });
+      setPilihanWarnaMata(data);
+
+      const opacityRef = collection(db, 'opacity_warna_permatas');
+      const q_opacity = query(opacityRef, orderBy('code'));
+      const querySnapshot_opacity = await getDocs(q_opacity);
+      const data_opacity = new Array();
+      querySnapshot_opacity.forEach((doc) => {
+        data_opacity.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      });
+      setPilihanOpacity(data_opacity);
+
+      const saturasiRef = collection(db, 'saturasi_warna_permatas');
+      const q_saturasi = query(saturasiRef, orderBy('code'));
+      const querySnapshot_saturasi = await getDocs(q_saturasi);
+      const data_saturasi = new Array();
+      querySnapshot_saturasi.forEach((doc) => {
+        data_saturasi.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      });
+      setPilihanSaturasi(data_saturasi);
+    }
+    fetchDataMata();
+  }, [setPilihanWarnaMata, setPilihanOpacity, setPilihanSaturasi]);
+  // console.log(PilihanWarnaMata);
+  // console.log(PilihanSaturasi)
+  // console.log(PilihanOpacity)
+  // END - FUNGSI MATA
 
   const [showMainan, setShowMainan] = useState(false);
   const toggleMainan = (el: BaseSyntheticEvent) => {
@@ -128,6 +177,27 @@ const AddProductPage = () => {
     // console.log(el.target);
   };
 
+  // FUNGSI MAINAN
+  const [PilihanMainan, setPilihanMainan] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchDataMainan = async () => {
+      const mainanRef = collection(db, 'mainans');
+      const q = query(mainanRef, orderBy('code'));
+      const querySnapshot = await getDocs(q);
+      const data = new Array();
+      querySnapshot.forEach((doc) => {
+        data.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      });
+      setPilihanMainan(data);
+    }
+    fetchDataMainan();
+  }, [setPilihanMainan]);
+  // console.log(PilihanMainan);
+  // END - FUNGSI MAINAN
+
   const [showMerk, setShowMerk] = useState(false);
   const toggleMerk = (el: BaseSyntheticEvent) => {
     if (el.target.checked) {
@@ -137,6 +207,27 @@ const AddProductPage = () => {
     }
     // console.log(el.target);
   };
+
+  // FUNGSI MERK
+  const [PilihanMerk, setPilihanMerk] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchDataMerk = async () => {
+      const merkRef = collection(db, 'merks');
+      const q = query(merkRef, orderBy('code'));
+      const querySnapshot = await getDocs(q);
+      const data = new Array();
+      querySnapshot.forEach((doc) => {
+        data.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      });
+      setPilihanMerk(data);
+    }
+    fetchDataMerk();
+  }, [setPilihanMerk]);
+  // console.log(PilihanMerk);
+  // END - FUNGSI MERK
 
   const [showPlat, setShowPlat] = useState(false);
   const togglePlat = (el: BaseSyntheticEvent) => {
@@ -198,10 +289,10 @@ const AddProductPage = () => {
                 <Cap></Cap>
                 <RangeUsia></RangeUsia>
                 {showUkuran && <Ukuran></Ukuran>}
-                {showMerk && <Merk></Merk>}
+                {showMerk && <Merk PilihanMerk={PilihanMerk}></Merk>}
               </div>
-              {showMata && <Mata></Mata>}
-              {showMainan && <Mainan></Mainan>}
+              {showMata && <Mata PilihanWarnaMata={PilihanWarnaMata} PilihanSaturasi={PilihanSaturasi} PilihanOpacity={PilihanOpacity}></Mata>}
+              {showMainan && <Mainan PilihanMainan={PilihanMainan}></Mainan>}
               <div className="grid grid-cols-2 gap-2 md:w-1/2">
                 {showPlat && <Plat></Plat>}
                 {showNampan && <Nampan></Nampan>}

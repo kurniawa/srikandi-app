@@ -50,7 +50,7 @@ const JenisPerhiasan = ({data_perhiasan, tipePerhiasanTerpilihCodename, tipePerh
                 <span className="label-text font-bold">jenis {tipePerhiasanTerpilihNama}</span>
             </div>
             <div className="relative">
-                <input className="input input-bordered" name="jenis_perhiasan" onChange={(e) => handleOninputJenisPerhiasan(e)} defaultValue={jenisPerhiasanTerpilih} key={jenisPerhiasanTerpilih}/>
+                <input className="input input-bordered w-full" name="jenis_perhiasan" onChange={(e) => handleOninputJenisPerhiasan(e)} defaultValue={jenisPerhiasanTerpilih} key={jenisPerhiasanTerpilih}/>
                 {(jenisPerhiasanFiltered.length !== 0) ?
                 !sudahPilih &&
                 <div className="absolute top-11 left-2 bg-base-100">

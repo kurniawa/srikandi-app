@@ -140,10 +140,10 @@ const AddProductPage = () => {
                 <Cap></Cap>
                 <RangeUsia></RangeUsia>
                 {showUkuran && <Ukuran></Ukuran>}
-                {showMerk && <Merk></Merk>}
+                {/* {showMerk && <Merk></Merk>} */}
               </div>
-              {showMata && <Mata></Mata>}
-              {showMainan && <Mainan></Mainan>}
+              {/* {showMata && <Mata></Mata>} */}
+              {/* {showMainan && <Mainan></Mainan>} */}
               <div className="grid grid-cols-2 gap-2 md:w-1/2">
                 {showPlat && <Plat></Plat>}
                 {showNampan && <Nampan></Nampan>}

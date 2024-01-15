@@ -1,13 +1,24 @@
 import {
+  ChangeEvent,
   useState,
 } from 'react';
+import ElementMainan from './ElementMainan';
+
+interface mainanProps {
+  PilihanMainan: {
+    id: string,
+    code: number,
+    codename: string,
+    nama: string,
+  }[]
+}
 
 interface elementMainanProps {
   id: number
 }
 
 
-const Mainan = () => {
+const Mainan = ({PilihanMainan}:mainanProps) => {
   const [elementMainan, setElementMainan] = useState<elementMainanProps[]>([]);
   const [idElement, setIdElement] = useState(0);
 
@@ -22,6 +33,8 @@ const Mainan = () => {
     const newElementMainan = elementMainan.filter( element => key !== element.id)
     setElementMainan(newElementMainan);
   };
+
+  
 
   return (
     <div className='mt-1'>
@@ -51,44 +64,29 @@ const Mainan = () => {
         </div>
       </div>
       {elementMainan.map( element => (
-        <div className="flex w-full gap-1 items-center mt-1" key={element.id}>
-        <div className="w-1/2">
-          <input
-            type="text"
-            placeholder="mainan..."
-            name="mainan"
-            className="input input-bordered input-sm w-full"
-          />
-        </div>
-        <div className="w-1/4">
-          <input
-            type="number"
-            placeholder="jumlah_mainan..."
-            name="jumlah_mainan"
-            className="input input-bordered input-sm w-full"
-          />
-        </div>
-        <div>
-          <button
-            type="button"
-            className="btn btn-error btn-sm text-white"
-            onClick={() => handleRemoveMainan(element.id)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="3"
-              stroke="currentColor"
-              className="w-5 h-5"
+      <div key={element.id} className='border-b border-slate-400 pb-1'>
+        <ElementMainan PilihanMainan={PilihanMainan}></ElementMainan>
+        <div className='flex justify-end'>
+            <button
+                type="button"
+                className="btn btn-error btn-sm text-white"
+                onClick={() => handleRemoveMainan(element.id)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 12h-15"
-              />
-            </svg>
-          </button>
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="3"
+                stroke="currentColor"
+                className="w-5 h-5"
+                >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 12h-15"
+                />
+                </svg>
+            </button>
         </div>
       </div>
       ))}
