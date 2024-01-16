@@ -24,12 +24,12 @@ export default function Home() {
   useEffect(() => {
     // const res = getAllProduct();
     async function fetchAllProduct() {
-      const res = await retrieveAllDataInCollection('products');
+      const res = await retrieveAllDataInCollection('perhiasans');
       setProducts(res)
     }
     fetchAllProduct();
   }, [setProducts])
-
+console.log(products)
 
   return (
     <>
@@ -46,7 +46,7 @@ export default function Home() {
             + Product
           </Link>
         </div>
-        <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+        <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-2'>
         {products && products.map((product, index) => 
           <ProductCard product={product} product_photo={null} key={index}></ProductCard>
         )}

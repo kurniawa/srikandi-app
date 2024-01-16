@@ -1,8 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const ProductCard = ({product, default_photo}:any) => {
     return ( 
-        <div className="rounded">
+        <div className="rounded bg-base-100 shadow drop-shadow p-1">
             <div>
                 {default_photo ?
                 <Image src={default_photo.path} width={50} height={50} alt="product default photo"/>
@@ -14,10 +15,17 @@ const ProductCard = ({product, default_photo}:any) => {
                 </div>
                 }
             </div>
-            {product && 
-            <div>
-                <span>{product.nama}</span>
-            </div>
+            {product &&
+            <>
+                <div>
+                    <span>{product.nama_long}</span>
+                </div>
+                <div className="flex justify-end">
+                    <Link href={`/products/detail/perhiasans/${product.id}`}>
+                        <button className="rounded-full bg-yellow-500 text-white w-7 h-7 font-bold">D</button>
+                    </Link>
+                </div>
+            </>
             }
         </div>
     );

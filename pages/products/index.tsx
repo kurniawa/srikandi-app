@@ -11,7 +11,7 @@ const Products = () => {
       <main className='p-2'>
         <h1>Products Page</h1>
         <form action="">
-          <UploadImage></UploadImage>
+          {/* <UploadImage></UploadImage> */}
         </form>
       </main>
     </>

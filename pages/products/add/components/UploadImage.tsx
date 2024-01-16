@@ -1,14 +1,27 @@
-'use client'
-import {useState} from 'react'            
+import {useEffect, useState} from 'react'            
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Image from 'next/image';
-import { app } from '@/firebase.config';
+import { db, storage } from '@/firebase.config';
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
-const UploadImage = () => {
+interface UploadImageProps {
+    collection_name: string,
+    id: string
+}
+
+const UploadImage = ({collection_name, id}:UploadImageProps) => {
     const [imageFile, setImageFile] = useState<File>();
-    const [downloadURL, setDownloadURL] = useState('');
+    // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [progressUpload, setProgressUpload] = useState<string | number>(0);
+
+    const [RelatedCollection, setRelatedCollection] = useState('');
+
+    useEffect(() => {
+        if (collection_name === 'perhiasans') {
+            setRelatedCollection('perhiasan_photos');
+        }
+    }, [setRelatedCollection, collection_name]);
 
     const handleSelectFile = (files:FileList|null) => {
         console.log(files);
@@ -17,7 +30,6 @@ const UploadImage = () => {
             console.log(files[0]);
         } else {
             throw new Error("File is too large!");
-            
         }
     }
 
@@ -25,8 +37,7 @@ const UploadImage = () => {
         e.preventDefault();
         setIsLoading(true);
         if (imageFile) {
-            const storage = getStorage(app);
-            const storageRef = ref(storage, `images/${imageFile.name}`);
+            const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
 
             const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
@@ -57,9 +68,46 @@ const UploadImage = () => {
             () => {
                 // Handle successful uploads on complete
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-                console.log('File available at', url);
-                setDownloadURL(url)
+                getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+                    // console.log('File available at', url);
+                    // let arr_conditions = [];
+                    // arr_conditions.push(where("perhiasan_id", "==", id));
+                    let q=null;
+                    try {
+                        q = query(collection(db, RelatedCollection), where("perhiasan_id", "==", id));
+                    } catch (error) {
+                    }
+                    console.log(q);
+                    const found_items = [];
+                    if (q) {
+                        const querySnapshot = await getDocs(q);
+    
+                        if (!querySnapshot.empty) {
+                            querySnapshot.forEach((doc) => {
+                                // doc.data() is never undefined for query doc snapshots
+                                found_items.push({
+                                    id: doc.id,
+                                    ...doc.data()
+                                });
+                            });
+                        }
+                    }
+
+                    if (found_items.length >= 5) {
+                        
+                    } else {
+                        // const docRef = await addDoc(collection(db, "cities"), {
+                        //     name: "Tokyo",
+                        //     country: "Japan"
+                        // });
+                        // console.log("Document written with ID: ", docRef.id);
+                        await setDoc(doc(collection(db, RelatedCollection)), {
+                            perhiasan_id: id,
+                            photo_path: url,
+                        });
+                    }
+
+                    // setDownloadURL(url)
                 });
             }
             );
@@ -106,7 +154,7 @@ const UploadImage = () => {
                     <progress className="progress w-56" value={progressUpload} max="100"></progress>
                 </div>
             </div>
-            <div className="mt-5">
+            {/* <div className="mt-5">
                 {
                 downloadURL && 
                 <div className='mt-2'>
@@ -116,7 +164,7 @@ const UploadImage = () => {
                     </div>
                 </div>
                 }
-            </div>
+            </div> */}
         </div>
     );
 }
