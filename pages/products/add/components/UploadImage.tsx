@@ -1,27 +1,29 @@
-import {useEffect, useState} from 'react'            
+import {Dispatch, SetStateAction, useEffect, useState} from 'react'            
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Image from 'next/image';
 import { db, storage } from '@/firebase.config';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 interface UploadImageProps {
-    collection_name: string,
-    id: string
+    setImageURL: Dispatch<SetStateAction<string>>,
+    setErrorMessage: Dispatch<SetStateAction<string>>,
+    JumlahPhoto: number,
 }
 
-const UploadImage = ({collection_name, id}:UploadImageProps) => {
+// const UploadImage = ({collection_name, id}:UploadImageProps) => {
+const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto}:UploadImageProps) => {
     const [imageFile, setImageFile] = useState<File>();
     // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [progressUpload, setProgressUpload] = useState<string | number>(0);
 
-    const [RelatedCollection, setRelatedCollection] = useState('');
+    // const [RelatedCollection, setRelatedCollection] = useState('');
 
-    useEffect(() => {
-        if (collection_name === 'perhiasans') {
-            setRelatedCollection('perhiasan_photos');
-        }
-    }, [setRelatedCollection, collection_name]);
+    // useEffect(() => {
+    //     if (collection_name === 'perhiasans') {
+    //         setRelatedCollection('perhiasan_photos');
+    //     }
+    // }, [setRelatedCollection, collection_name]);
 
     const handleSelectFile = (files:FileList|null) => {
         console.log(files);
@@ -36,84 +38,55 @@ const UploadImage = ({collection_name, id}:UploadImageProps) => {
     const handleUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        if (imageFile) {
-            const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
-
-            const uploadTask = uploadBytesResumable(storageRef, imageFile);
-
-            // Register three observers:
-            // 1. 'state_changed' observer, called any time the state changes
-            // 2. Error observer, called on failure
-            // 3. Completion observer, called on successful completion
-            uploadTask.on('state_changed', 
-            (snapshot) => {
-                // Observe state change events such as progress, pause, and resume
-                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-                setProgressUpload(progress);
-                switch (snapshot.state) {
-                case 'paused':
-                    console.log('Upload is paused');
-                    break;
-                case 'running':
-                    console.log('Upload is running');
-                    break;
-                }
-            }, 
-            (error) => {
-                // Handle unsuccessful uploads
-                console.log(error);
-            }, 
-            () => {
-                // Handle successful uploads on complete
-                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-                    // console.log('File available at', url);
-                    // let arr_conditions = [];
-                    // arr_conditions.push(where("perhiasan_id", "==", id));
-                    let q=null;
-                    try {
-                        q = query(collection(db, RelatedCollection), where("perhiasan_id", "==", id));
-                    } catch (error) {
-                    }
-                    console.log(q);
-                    const found_items = [];
-                    if (q) {
-                        const querySnapshot = await getDocs(q);
-    
-                        if (!querySnapshot.empty) {
-                            querySnapshot.forEach((doc) => {
-                                // doc.data() is never undefined for query doc snapshots
-                                found_items.push({
-                                    id: doc.id,
-                                    ...doc.data()
-                                });
-                            });
-                        }
-                    }
-
-                    if (found_items.length >= 5) {
-                        
-                    } else {
-                        // const docRef = await addDoc(collection(db, "cities"), {
-                        //     name: "Tokyo",
-                        //     country: "Japan"
-                        // });
-                        // console.log("Document written with ID: ", docRef.id);
-                        await setDoc(doc(collection(db, RelatedCollection)), {
-                            perhiasan_id: id,
-                            photo_path: url,
-                        });
-                    }
-
-                    // setDownloadURL(url)
-                });
-            }
-            );
+        if (JumlahPhoto >= 5) {
+            setErrorMessage('Barang ini sudah memiliki 5 atau lebih foto!');
         } else {
-            console.log('File not found!');
+            if (imageFile) {
+                const generated_new_name = Date.now();
+                const file_pathname = `images/perhiasan/${generated_new_name}`
+                // const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
+                const storageRef = ref(storage, file_pathname);
+    
+                const uploadTask = uploadBytesResumable(storageRef, imageFile);
+    
+                // Register three observers:
+                // 1. 'state_changed' observer, called any time the state changes
+                // 2. Error observer, called on failure
+                // 3. Completion observer, called on successful completion
+                uploadTask.on('state_changed', 
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    setProgressUpload(progress);
+                    switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                    }
+                }, 
+                (error) => {
+                    // Handle unsuccessful uploads
+                    console.log(error);
+                }, 
+                () => {
+                    // Handle successful uploads on complete
+                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                    getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+                        setImageURL(url);
+                        // setDownloadURL(url)
+                    });
+                }
+                );
+            } else {
+                console.log('File not found!');
+            }
         }
+
         setIsLoading(false);
     }
 

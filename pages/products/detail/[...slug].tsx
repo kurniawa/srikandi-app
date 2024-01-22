@@ -1,16 +1,23 @@
 import { SessionProvider } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Navbar from '@/pages/components/Navbar';
-import PageTitle from '@/pages/components/PageTitle';
 import { retrieveDataById } from '@/lib/firebase/service';
 import { SetStateAction, useEffect, useState } from 'react';
 import UploadImage from '../add/components/UploadImage';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { db } from '@/firebase.config';
+import AlertError from '@/pages/components/AlertError';
+import Image from "next/image";
 
 const ProductDetailPage = () => {
+  const [ErrorMessage, setErrorMessage] = useState('');
   const router = useRouter();
   //   console.log(router);
   // console.log(router.query.slug);
   const [Product, setProduct] = useState<any>();
+  const [ProductPhotoMain, setProductPhotoMain] = useState<any>();
+  const [ProductPhotoSub, setProductPhotoSub] = useState<any>();
+  const [JumlahPhoto, setJumlahPhoto] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -19,19 +26,126 @@ const ProductDetailPage = () => {
         setProduct(fetched_product);
       }
     }
+
     fetchProduct()
   },[setProduct, router.query.slug]);
 
-  console.log(Product);
+  useEffect(() => {
+    let jumlah_photo = 0;
+    const fetchProductPhotos = async () => {
+      if (Product) {
+        let related_collection = 'perhiasan_photos';
+
+        if (Product.tipe_barang === 'LM') {
+          related_collection = 'lm_photos';
+        }
+
+        let q_main_sub;
+        if (router.query.slug) {
+          // const condition_main = []
+          // condition_main.push(where("perhiasan_id", "==", router.query.slug[1]));
+          // condition_main.push(where("status", "==", 'utama'));
+          q_main_sub = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
+        }
+        const found_items:any = [];
+        let found_main;
+        const found_sub:any = [];
+        if (q_main_sub) {
+          const querySnapshot = await getDocs(q_main_sub);
+
+          if (!querySnapshot.empty) {
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                found_items.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+          }
+
+          if (found_items.length >= 0) {
+            found_items.forEach((item:any) => {
+              if (item.status === 'main') {
+                found_main = item;
+              } else {
+                found_sub.push(item);
+              }
+              jumlah_photo++;
+            });
+          }
+
+          setProductPhotoMain(found_main);
+          setProductPhotoSub(found_sub);
+          setJumlahPhoto(jumlah_photo);
+        }
+      }
+    }
+
+    fetchProductPhotos();
+
+  }, [Product, router, setProductPhotoMain, setProductPhotoSub]);
+  console.log(ProductPhotoSub);
+
+  const [ImageURL, setImageURL] = useState('');
+
+  useEffect(() => {
+    const addImage = async () => {
+      // console.log('slug:', ImageURL);
+      let related_collection = 'perhiasan_photos';
+      if (Product.tipe_barang === 'LM') {
+        related_collection = 'perhiasan_lms'
+      }
+      // console.log(router.query.slug);
+      let q;
+      if (router.query.slug) {
+        q = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
+      }
+
+      // console.log(found_items);
+      if (router.query.slug) {
+        
+        let status = 'sub';
+
+        if (JumlahPhoto === 0) {
+          status = 'main'  
+        }
+
+        await setDoc(doc(collection(db, related_collection)), {
+          perhiasan_id: router.query.slug[1],
+          photo_path: ImageURL,
+          status: status,
+        });
+      }
+    }
+
+    if (ImageURL && Product && ImageURL !== '') {
+      addImage();
+    }
+
+  }, [ImageURL, setImageURL, Product, router, JumlahPhoto])
+
+  // console.log(Product);
+  console.log(Date.now());
   return (
     <>
       <SessionProvider>
           <Navbar></Navbar>
       </SessionProvider>
       <main>
-        <div className='p-2'>
-          <PageTitle title='Detail Produk'></PageTitle>
+        {ProductPhotoMain &&
+        <div>
+          <Image src={ProductPhotoMain.photo_path} width={50} height={50} alt='' />
         </div>
+        }
+        {ProductPhotoSub &&
+        <div className='flex'>
+          {ProductPhotoSub.map((photo:any)=>
+          <div key={photo.id} className='border-4 border-slate-100'>
+            <Image src={photo.photo_path} width={100} height={100} alt='' />
+          </div>
+          )}
+        </div>
+        }
         {Product &&
         <>
           <div className='p-2'>
@@ -43,11 +157,17 @@ const ProductDetailPage = () => {
               <div>{Product.harga_t}</div>
             </div>
             {router.query.slug &&
-            <UploadImage collection_name={router.query.slug[0]} id={Product.id}></UploadImage>
+            // <UploadImage collection_name={router.query.slug[0]} id={Product.id}></UploadImage>
+            (JumlahPhoto >= 5) ?
+            ''
+            :
+            <UploadImage setImageURL={setImageURL} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage}></UploadImage>
+            
             }
           </div>
         </>
         }
+        <AlertError ErrorMessage={ErrorMessage} setErrorMessage={setErrorMessage}></AlertError>
       </main>
     </>
   );
