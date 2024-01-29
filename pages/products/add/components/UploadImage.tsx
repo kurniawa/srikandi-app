@@ -7,11 +7,13 @@ import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase
 interface UploadImageProps {
     setImageURL: Dispatch<SetStateAction<string>>,
     setErrorMessage: Dispatch<SetStateAction<string>>,
+    setPathname: Dispatch<SetStateAction<string>>,
+    setFilename: Dispatch<SetStateAction<string>>,
     JumlahPhoto: number,
 }
 
 // const UploadImage = ({collection_name, id}:UploadImageProps) => {
-const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto}:UploadImageProps) => {
+const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto, setPathname, setFilename}:UploadImageProps) => {
     const [imageFile, setImageFile] = useState<File>();
     // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -42,8 +44,12 @@ const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto}:UploadImageProp
             setErrorMessage('Barang ini sudah memiliki 5 atau lebih foto!');
         } else {
             if (imageFile) {
-                const generated_new_name = Date.now();
-                const file_pathname = `images/perhiasan/${generated_new_name}`
+                const generated_new_name = Date.now().toString() + '.' + imageFile.name.split('.').pop();
+                const file_pathname = `images/perhiasan/${generated_new_name}`;
+
+                setPathname(file_pathname);
+                setFilename(generated_new_name);
+
                 // const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
                 const storageRef = ref(storage, file_pathname);
     

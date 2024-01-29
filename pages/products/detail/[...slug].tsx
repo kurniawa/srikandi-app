@@ -18,6 +18,8 @@ const ProductDetailPage = () => {
   const [ProductPhotoMain, setProductPhotoMain] = useState<any>();
   const [ProductPhotoSub, setProductPhotoSub] = useState<any>();
   const [JumlahPhoto, setJumlahPhoto] = useState(0);
+  const [Pathname, setPathname] = useState('');
+  const [Filename, setFilename] = useState('');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -161,7 +163,7 @@ const ProductDetailPage = () => {
             (JumlahPhoto >= 5) ?
             ''
             :
-            <UploadImage setImageURL={setImageURL} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage}></UploadImage>
+            <UploadImage setImageURL={setImageURL} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage} setFilename={setFilename} setPathname={setPathname}></UploadImage>
             
             }
           </div>
