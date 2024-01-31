@@ -4,7 +4,7 @@ const { hostname } = require('os');
 const nextConfig = {
   // output: 'export',
   reactStrictMode: true,
-  images: { remotePatterns: [{ hostname: 'daisyui.com' }, {hostname: 'firebasestorage.googleapis.com'}] },
+  images: { remotePatterns: [{ hostname: 'daisyui.com' }, {hostname: 'firebasestorage.googleapis.com'}, {hostname: 'images.unsplash.com'}] },
 };
 
 module.exports = nextConfig;

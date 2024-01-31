@@ -8,6 +8,7 @@ import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firesto
 import { db } from '@/firebase.config';
 import AlertError from '@/pages/components/AlertError';
 import Image from "next/image";
+import ImageSlider from '../add/components/ImageSlider';
 
 const ProductDetailPage = () => {
   const [ErrorMessage, setErrorMessage] = useState('');
@@ -114,7 +115,9 @@ const ProductDetailPage = () => {
 
         await setDoc(doc(collection(db, related_collection)), {
           perhiasan_id: router.query.slug[1],
-          photo_path: ImageURL,
+          photo_url: ImageURL,
+          photo_pathname: Pathname,
+          photo_filename: Filename,
           status: status,
         });
       }
@@ -124,7 +127,7 @@ const ProductDetailPage = () => {
       addImage();
     }
 
-  }, [ImageURL, setImageURL, Product, router, JumlahPhoto])
+  }, [ImageURL, setImageURL, Product, router, JumlahPhoto, Pathname, Filename])
 
   // console.log(Product);
   console.log(Date.now());
@@ -134,16 +137,17 @@ const ProductDetailPage = () => {
           <Navbar></Navbar>
       </SessionProvider>
       <main>
+        <ImageSlider></ImageSlider>
         {ProductPhotoMain &&
         <div>
-          <Image src={ProductPhotoMain.photo_path} width={50} height={50} alt='' />
+          <Image src={ProductPhotoMain.photo_url} width={50} height={50} alt='' />
         </div>
         }
         {ProductPhotoSub &&
         <div className='flex'>
           {ProductPhotoSub.map((photo:any)=>
           <div key={photo.id} className='border-4 border-slate-100'>
-            <Image src={photo.photo_path} width={100} height={100} alt='' />
+            <Image src={photo.photo_url} width={100} height={100} alt='' />
           </div>
           )}
         </div>
@@ -169,6 +173,7 @@ const ProductDetailPage = () => {
           </div>
         </>
         }
+        {/* <Image src="/data/images/at_desy.jpg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" width={500} height={500} alt="..." /> */}
         <AlertError ErrorMessage={ErrorMessage} setErrorMessage={setErrorMessage}></AlertError>
       </main>
     </>
