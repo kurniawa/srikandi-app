@@ -9,6 +9,7 @@ import { db } from '@/firebase.config';
 import AlertError from '@/pages/components/AlertError';
 import Image from "next/image";
 import ImageSlider from '../add/components/ImageSlider';
+import {formatPriceNormal} from '@/lib/format';
 
 const ProductDetailPage = () => {
   const [ErrorMessage, setErrorMessage] = useState('');
@@ -16,8 +17,11 @@ const ProductDetailPage = () => {
   //   console.log(router);
   // console.log(router.query.slug);
   const [Product, setProduct] = useState<any>();
-  const [ProductPhotoMain, setProductPhotoMain] = useState<any>();
-  const [ProductPhotoSub, setProductPhotoSub] = useState<any>();
+  // const [ProductPhotoMain, setProductPhotoMain] = useState<any>();
+  // const [ProductPhotoSub, setProductPhotoSub] = useState<any>();
+  const [ShowSlider, setShowSlider] = useState(false);
+  const [ImageGabungan, setImageGabungan] = useState<any>();
+
   const [JumlahPhoto, setJumlahPhoto] = useState(0);
   const [Pathname, setPathname] = useState('');
   const [Filename, setFilename] = useState('');
@@ -77,17 +81,32 @@ const ProductDetailPage = () => {
             });
           }
 
-          setProductPhotoMain(found_main);
-          setProductPhotoSub(found_sub);
+          // setProductPhotoMain(found_main);
+          // setProductPhotoSub(found_sub);
           setJumlahPhoto(jumlah_photo);
+
+          let image_gabungan:any = [];
+          if (found_main) {
+            image_gabungan.push(found_main);
+            if (found_sub.length !== 0) {
+              image_gabungan = image_gabungan.concat(found_sub)
+            }
+          } else if(found_sub.length !== 0) {
+            image_gabungan = found_sub;
+          }
+
+          setImageGabungan(image_gabungan);
+          if (image_gabungan.length !== 0) {
+            setShowSlider(true);
+          }
         }
       }
     }
 
     fetchProductPhotos();
 
-  }, [Product, router, setProductPhotoMain, setProductPhotoSub]);
-  console.log(ProductPhotoSub);
+  }, [Product, router, setJumlahPhoto, setImageGabungan, setShowSlider]);
+  // console.log(ProductPhotoSub);
 
   const [ImageURL, setImageURL] = useState('');
 
@@ -130,37 +149,25 @@ const ProductDetailPage = () => {
   }, [ImageURL, setImageURL, Product, router, JumlahPhoto, Pathname, Filename])
 
   // console.log(Product);
-  console.log(Date.now());
+  // console.log(Date.now());
   return (
     <>
       <SessionProvider>
           <Navbar></Navbar>
       </SessionProvider>
       <main>
-        <ImageSlider></ImageSlider>
-        {ProductPhotoMain &&
-        <div>
-          <Image src={ProductPhotoMain.photo_url} width={50} height={50} alt='' />
-        </div>
-        }
-        {ProductPhotoSub &&
-        <div className='flex'>
-          {ProductPhotoSub.map((photo:any)=>
-          <div key={photo.id} className='border-4 border-slate-100'>
-            <Image src={photo.photo_url} width={100} height={100} alt='' />
-          </div>
-          )}
-        </div>
+        {ShowSlider &&
+        <ImageSlider ImageGabungan={ImageGabungan}></ImageSlider>
         }
         {Product &&
         <>
           <div className='p-2'>
-            <div>
+            <div className='font-semibold text-xl'>
               {Product.nama_long}
             </div>
             <div className="flex justify-between">
-              <div>{Product.harga_gr}</div>
-              <div>{Product.harga_t}</div>
+              <div>H: {formatPriceNormal(Product.harga_gr)}/gr</div>
+              <div className='font-semibold'>T: {formatPriceNormal(Product.harga_t)}</div>
             </div>
             {router.query.slug &&
             // <UploadImage collection_name={router.query.slug[0]} id={Product.id}></UploadImage>

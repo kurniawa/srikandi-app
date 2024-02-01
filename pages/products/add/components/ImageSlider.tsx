@@ -1,9 +1,14 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
 
-export default function ImageSlider() {
+interface ImageSliderProps {
+  ImageGabungan: any
+}
+
+export default function ImageSlider({ImageGabungan}: ImageSliderProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [loaded, setLoaded] = useState(false)
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -15,25 +20,26 @@ export default function ImageSlider() {
       setLoaded(true)
     },
   })
+  const session: any = useSession();
 
   return (
     <>
       <div className="relative">
         <div ref={sliderRef} className="keen-slider">
-          <div className={`keen-slider__slide`}>
-            <Image src={'/data/images/at_desy.jpg'} alt="..." width={500} height={500} />
+          {ImageGabungan && ImageGabungan.map((photo:any) =>
+          <div className={`keen-slider__slide`} key={photo.id}>
+            <Image src={photo.photo_url} alt="..." width={500} height={500} className="w-full" />
           </div>
-          <div className={`keen-slider__slide`}>
-            <Image src={'/data/images/cc-setengah-rantai.jpg'} alt="..." width={500} height={500} />
-          </div>
-          <div className={`keen-slider__slide`}>
+          )
+          }
+          {/* <div className={`keen-slider__slide`}>
             <Image src={'/data/images/cc-wedding-mp1.jpg'} alt="..." width={500} height={500} />
           </div>
           <div className={`keen-slider__slide`}>
             <Image src={'/data/images/kkl-biji-lada.jpg'} alt="..." width={500} height={500} />
-          </div>
+          </div> */}
         </div>
-        {loaded && instanceRef.current && (
+        {loaded && instanceRef.current && instanceRef.current.track.details && (
           <>
             <Arrow
               left
@@ -71,6 +77,18 @@ export default function ImageSlider() {
           </>
         )}
       </div>
+
+      {ImageGabungan &&
+        <div className='flex'>
+          {ImageGabungan.map((photo:any, index:number)=>
+          <div key={photo.id} className='border-4 border-slate-100'>
+            <Image src={photo.photo_url} width={100} height={100} alt='' onClick={() => {
+              instanceRef.current?.moveToIdx(index)
+            }} />
+          </div>
+          )}
+        </div>
+      }
       {/* {loaded && instanceRef.current && (
         <div className="flex py-2 px-0 justify-center">
           {[

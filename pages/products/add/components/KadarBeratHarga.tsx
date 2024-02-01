@@ -1,4 +1,4 @@
-import formatPrice from "@/lib/format";
+import {formatPrice} from "@/lib/format";
 import { BaseSyntheticEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 import Kadar from "./Kadar";
 
