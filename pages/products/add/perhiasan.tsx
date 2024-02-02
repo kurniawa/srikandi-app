@@ -111,10 +111,12 @@ const AddProductPage = () => {
     }
   }, [redirecting, router]);
 
+  const [DataUser, setDataUser] = useState<any>();
+
   return (
     <>
       <SessionProvider>
-        <Navbar></Navbar>
+        <Navbar setDataUser={setDataUser}></Navbar>
       </SessionProvider>
       <main className="p-2 mb-52">
         <div>

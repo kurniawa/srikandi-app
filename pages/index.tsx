@@ -29,12 +29,14 @@ export default function Home() {
     }
     fetchAllProduct();
   }, [setProducts])
-console.log(products)
+// console.log(products)
+
+  const [DataUser, setDataUser] = useState<any>();
 
   return (
     <>
       <SessionProvider>
-        <Navbar></Navbar>
+        <Navbar setDataUser={setDataUser}></Navbar>
       </SessionProvider>
       <main className='p-2'>
         <div className="flex justify-between items-center">

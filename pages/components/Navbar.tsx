@@ -2,10 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CartIcon from './CartIcon';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import React from "react";
 
-const Navbar = () => {
+interface NavbarProps {
+  setDataUser: Dispatch<SetStateAction<any>>
+}
+
+const Navbar = ({setDataUser}:NavbarProps) => {
   //   const { data, status }: { data: any; status: string } = useSession();
   const session: any = useSession();
     // console.log(session);
@@ -17,6 +21,16 @@ const Navbar = () => {
     setShowColourPalette(!showColourPalette);
     console.log(showColourPalette);
   }
+
+  useEffect(() => {
+    if (session) {
+      if (session.data) {
+        if (session.data.user) {
+          setDataUser(session.data.user);
+        }
+      }
+    }
+  }, [setDataUser, session]);
 
   return (
     <>

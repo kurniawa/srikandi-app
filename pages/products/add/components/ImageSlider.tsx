@@ -20,7 +20,7 @@ export default function ImageSlider({ImageGabungan}: ImageSliderProps) {
       setLoaded(true)
     },
   })
-  const session: any = useSession();
+  // const session: any = useSession();
 
   return (
     <>
