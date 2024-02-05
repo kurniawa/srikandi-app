@@ -4,7 +4,7 @@ import Navbar from '@/pages/components/Navbar';
 import { retrieveDataById } from '@/lib/firebase/service';
 import { SetStateAction, useEffect, useState } from 'react';
 import UploadImage from '../add/components/UploadImage';
-import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, orderBy, query, setDoc, where } from 'firebase/firestore';
 import { db } from '@/firebase.config';
 import AlertError from '@/pages/components/AlertError';
 import Image from "next/image";
@@ -22,11 +22,8 @@ const ProductDetailPage = () => {
   // const [ProductPhotoMain, setProductPhotoMain] = useState<any>();
   // const [ProductPhotoSub, setProductPhotoSub] = useState<any>();
   const [ShowSlider, setShowSlider] = useState(false);
-  const [ImageGabungan, setImageGabungan] = useState<any>();
-
-  const [JumlahPhoto, setJumlahPhoto] = useState(0);
-  const [Pathname, setPathname] = useState('');
-  const [Filename, setFilename] = useState('');
+  const [ItemPhotos, setItemPhotos] = useState<any>();
+  const [EditItemPhotos, setEditItemPhotos] = useState<any>();
 
   const [DataUser, setDataUser] = useState<any>();
 
@@ -39,7 +36,7 @@ const ProductDetailPage = () => {
           fetched_product.id = router.query.slug[1];
         }
 
-        console.log(fetched_product);
+        // console.log(fetched_product);
         setProduct(fetched_product);
       }
     }
@@ -57,18 +54,16 @@ const ProductDetailPage = () => {
           related_collection = 'lm_photos';
         }
 
-        let q_main_sub;
+        let q_get_photos;
         if (router.query.slug) {
           // const condition_main = []
           // condition_main.push(where("perhiasan_id", "==", router.query.slug[1]));
           // condition_main.push(where("status", "==", 'utama'));
-          q_main_sub = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
+          q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]), orderBy('index'));
         }
         const found_items:any = [];
-        let found_main;
-        const found_sub:any = [];
-        if (q_main_sub) {
-          const querySnapshot = await getDocs(q_main_sub);
+        if (q_get_photos) {
+          const querySnapshot = await getDocs(q_get_photos);
 
           if (!querySnapshot.empty) {
             querySnapshot.forEach((doc) => {
@@ -80,109 +75,87 @@ const ProductDetailPage = () => {
             });
           }
 
-          if (found_items.length >= 0) {
-            found_items.forEach((item:any) => {
-              if (item.status === 'main') {
-                found_main = item;
-              } else {
-                found_sub.push(item);
-              }
-              jumlah_photo++;
-            });
-          }
+          // if (found_items.length >= 0) {
+          //   found_items.forEach((item:any) => {
+          //     if (item.status === 'main') {
+          //       found_main = item;
+          //     } else {
+          //       found_sub.push(item);
+          //     }
+          //     jumlah_photo++;
+          //   });
+          // }
 
           // setProductPhotoMain(found_main);
           // setProductPhotoSub(found_sub);
-          setJumlahPhoto(jumlah_photo);
 
-          let image_gabungan:any = [];
-          if (found_main) {
-            image_gabungan.push(found_main);
-            if (found_sub.length !== 0) {
-              image_gabungan = image_gabungan.concat(found_sub)
-            }
-          } else if(found_sub.length !== 0) {
-            image_gabungan = found_sub;
-          }
+          // let image_gabungan:any = [];
+          // if (found_main) {
+          //   image_gabungan.push(found_main);
+          //   if (found_sub.length !== 0) {
+          //     image_gabungan = image_gabungan.concat(found_sub)
+          //   }
+          // } else if(found_sub.length !== 0) {
+          //   image_gabungan = found_sub;
+          // }
 
-          setImageGabungan(image_gabungan);
-          if (image_gabungan.length !== 0) {
+          setItemPhotos(found_items);
+          if (found_items.length !== 0) {
             setShowSlider(true);
           }
+
+          for (let i = 0; i < 5; i++) {
+            if (found_items[i]) {
+              if (found_items[i].index !== i+1) {
+                found_items[i].index = i+1;
+              } 
+            } else {
+              found_items[i] = {
+                index: i+1
+              };
+            }
+          }
+
+          setEditItemPhotos(found_items);
         }
       }
     }
 
     fetchProductPhotos();
 
-  }, [Product, router, setJumlahPhoto, setImageGabungan, setShowSlider]);
+  }, [Product, router, setItemPhotos, setShowSlider, setEditItemPhotos]);
   // console.log(ProductPhotoSub);
+  console.log(EditItemPhotos);
 
-  const [ImageURL, setImageURL] = useState('');
 
-  useEffect(() => {
-    const addImage = async () => {
-      // console.log('slug:', ImageURL);
-      let related_collection = 'perhiasan_photos';
-      if (Product.tipe_barang === 'LM') {
-        related_collection = 'perhiasan_lms'
-      }
-      // console.log(router.query.slug);
-      let q;
-      if (router.query.slug) {
-        q = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
-      }
-
-      // console.log(found_items);
-      if (router.query.slug) {
-        
-        let status = 'sub';
-
-        if (JumlahPhoto === 0) {
-          status = 'main'  
-        }
-
-        await setDoc(doc(collection(db, related_collection)), {
-          perhiasan_id: router.query.slug[1],
-          photo_url: ImageURL,
-          photo_pathname: Pathname,
-          photo_filename: Filename,
-          status: status,
-        });
-      }
-    }
-
-    if (ImageURL && Product && ImageURL !== '') {
-      addImage();
-    }
-
-  }, [ImageURL, setImageURL, Product, router, JumlahPhoto, Pathname, Filename])
+  
 
   // console.log(Product);
   // console.log(Date.now());
   // console.log(DataUser);
-  const [ShowDetail, setShowDetail] = useState('block');
-  const [ShowEdit, setShowEdit] = useState('hidden');
+  // const [ShowDetail, setShowDetail] = useState('block');
+  // const [ShowEdit, setShowEdit] = useState('hidden');
 
-  const handleShowEdit = () => {
-    setShowEdit('block');
-    setShowDetail('hidden');
-  }
+  // const handleShowEdit = () => {
+  //   setShowEdit('block');
+  //   setShowDetail('hidden');
+  // }
 
-  const handleCancelEdit = () => {
-    // console.log('cancel edit');
-    setShowEdit('hidden');
-    setShowDetail('block');
-  }
+  // const handleCancelEdit = () => {
+  //   // console.log('cancel edit');
+  //   setShowEdit('hidden');
+  //   setShowDetail('block');
+  // }
   return (
     <>
       <SessionProvider>
           <Navbar setDataUser={setDataUser}></Navbar>
       </SessionProvider>
       <main>
-        <div className={ShowDetail}>
+        {/* <div className={ShowDetail}> */}
+        <div>
           {ShowSlider &&
-          <ImageSlider ImageGabungan={ImageGabungan}></ImageSlider>
+          <ImageSlider ItemPhotos={ItemPhotos}></ImageSlider>
           }
           {Product &&
           <>
@@ -196,83 +169,82 @@ const ProductDetailPage = () => {
               </div>
               <h3 className='text-lg font-semibold mt-2'>Spesifikasi</h3>
               <table className='w-full'>
-                <tr>
-                  <td className='border border-primary'>nama</td><td className='border border-primary'>{Product.nama_short}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>warna</td><td className='border border-primary'>{Product.warna_emas}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>berat</td><td className='border border-primary'>{Product.berat} gr</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>kadar</td><td className='border border-primary'>{Product.kadar}%</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>cap</td><td className='border border-primary'>{Product.cap}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>ukuran</td><td className='border border-primary'>{(Product.ukuran) ? Product.ukuran : '---'}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>usia</td><td className='border border-primary'>{Product.range_usia}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>kondisi</td><td className='border border-primary'>{Product.kondisi}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>mata</td><td className='border border-primary'>
-                    {(Product.data_mata) ?
-                    <table className='w-full'>
-                    {Product.data_mata.map((mata:any, index:number) => 
-                      <tr key={index}>
-                        <td className='border border-primary'>{mata.warna_mata}</td>
-                        <td className='border border-primary'>{mata.jumlah}</td>
-                      </tr>
-                    )}
-                    </table>
-                    :
-                    '---'
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>mainan</td><td className='border border-primary'>
-                    {(Product.data_mainan) ?
-                    <table className='w-full'>
-                    {Product.data_mainan.map((mainan:any, index:number) => 
-                      <tr key={index}>
-                        <td className='border border-primary'>{mainan.warna_mainan}</td>
-                        <td className='border border-primary'>{mainan.jumlah}</td>
-                      </tr>
-                    )}
-                    </table>
-                    :
-                    '---'
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>plat</td><td className='border border-primary'>{(Product.plat) ? Product.plat : '---'}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>keterangan</td><td className='border border-primary'>{(Product.keterangan) ? Product.keterangan : '---'}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>deskripsi</td><td className='border border-primary'>{(Product.deskripsi) ? Product.deskripsi : '---'}</td>
-                </tr>
-                <tr>
-                  <td className='border border-primary'>stock</td><td className='border border-primary'>{Product.stock}</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td className='border border-primary'>nama</td><td className='border border-primary'>{Product.nama_short}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>warna</td><td className='border border-primary'>{Product.warna_emas}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>berat</td><td className='border border-primary'>{Product.berat} gr</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>kadar</td><td className='border border-primary'>{Product.kadar}%</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>cap</td><td className='border border-primary'>{Product.cap}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>ukuran</td><td className='border border-primary'>{(Product.ukuran) ? Product.ukuran : '---'}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>usia</td><td className='border border-primary'>{Product.range_usia}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>kondisi</td><td className='border border-primary'>{Product.kondisi}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>mata</td><td className='border border-primary'>
+                      {(Product.data_mata) ?
+                      <table className='w-full'>
+                        <tbody>
+                          {Product.data_mata.map((mata:any, index:number) => 
+                          <tr key={index}>
+                            <td className='border border-primary'>{mata.warna_mata}</td>
+                            <td className='border border-primary'>{mata.jumlah}</td>
+                          </tr>
+                          )}
+                        </tbody>
+                      </table>
+                      :
+                      '---'
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>mainan</td><td className='border border-primary'>
+                      {(Product.data_mainan) ?
+                      <table className='w-full'>
+                        <tbody>
+                        {Product.data_mainan.map((mainan:any, index:number) => 
+                          <tr key={index}>
+                            <td className='border border-primary'>{mainan.warna_mainan}</td>
+                            <td className='border border-primary'>{mainan.jumlah}</td>
+                          </tr>
+                        )}
+                        </tbody>
+                      </table>
+                      :
+                      '---'
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>plat</td><td className='border border-primary'>{(Product.plat) ? Product.plat : '---'}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>keterangan</td><td className='border border-primary'>{(Product.keterangan) ? Product.keterangan : '---'}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>deskripsi</td><td className='border border-primary'>{(Product.deskripsi) ? Product.deskripsi : '---'}</td>
+                  </tr>
+                  <tr>
+                    <td className='border border-primary'>stock</td><td className='border border-primary'>{Product.stock}</td>
+                  </tr>
+                </tbody>
               </table>
-              {router.query.slug &&
-              // <UploadImage collection_name={router.query.slug[0]} id={Product.id}></UploadImage>
-              (JumlahPhoto >= 5) ?
-              ''
-              :
-              <UploadImage setImageURL={setImageURL} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage} setFilename={setFilename} setPathname={setPathname}></UploadImage>
               
-              }
             </div>
           </>
           }
@@ -281,13 +253,15 @@ const ProductDetailPage = () => {
         <AlertError ErrorMessage={ErrorMessage} setErrorMessage={setErrorMessage}></AlertError>
         {DataUser &&
         (DataUser.role === 'admin') ?
-        <div className={ShowDetail}>
+        // <div className={ShowDetail}>
+        <div>
           <div className="flex justify-center">
             <button type='button' className='btn btn-success text-white'>+ Keranjang</button>
           </div>
+          {router && router.query && router.query.slug &&
           <div className="flex justify-center mt-2">
             {/* <Link href={`/products/detail/perhiasans/${product.id}`} className='btn btn-disabled'>Edit</Link> */}
-            <button className='border-2 border-slate-300 rounded-3xl py-2 px-3 text-slate-400 font-semibold' onClick={handleShowEdit}>
+            <Link href={`/products/edit/${router.query.slug[0]}/${router.query.slug[1]}`} className='border-2 border-slate-300 rounded-3xl py-2 px-3 text-slate-400 font-semibold'>
               <div className="flex justify-center gap-1 items-center">
                 <span>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">
@@ -296,17 +270,18 @@ const ProductDetailPage = () => {
                 </span>
                 <span>Edit</span>
               </div>
-            </button>
+            </Link>
           </div>
+          }
         </div>
         :
         ''
         }
-        <div className={`mt-2 ${ShowEdit}`}>
+        {/* <div className={`mt-2 ${ShowEdit}`}>
           <div className="flex justify-center">
             <button type='button' className='py-2 px-3 rounded-3xl border-slate-300 border-2 text-slate-400 font-semibold' onClick={handleCancelEdit}>X Cancel Edit</button>
           </div>
-        </div>
+        </div> */}
         <div className='h-36'></div>
       </main>
     </>

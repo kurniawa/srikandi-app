@@ -5,10 +5,10 @@ import Image from "next/image"
 import { useSession } from "next-auth/react"
 
 interface ImageSliderProps {
-  ImageGabungan: any
+  ItemPhotos: any
 }
 
-export default function ImageSlider({ImageGabungan}: ImageSliderProps) {
+export default function ImageSlider({ItemPhotos}: ImageSliderProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [loaded, setLoaded] = useState(false)
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -26,7 +26,8 @@ export default function ImageSlider({ImageGabungan}: ImageSliderProps) {
     <>
       <div className="relative">
         <div ref={sliderRef} className="keen-slider">
-          {ImageGabungan && ImageGabungan.map((photo:any) =>
+          {ItemPhotos && ItemPhotos.map((photo:any) =>
+          photo.id &&
           <div className={`keen-slider__slide`} key={photo.id}>
             <Image src={photo.photo_url} alt="..." width={500} height={500} className="w-full" />
           </div>
@@ -78,9 +79,10 @@ export default function ImageSlider({ImageGabungan}: ImageSliderProps) {
         )}
       </div>
 
-      {ImageGabungan &&
+      {ItemPhotos &&
         <div className='flex'>
-          {ImageGabungan.map((photo:any, index:number)=>
+          {ItemPhotos.map((photo:any, index:number)=>
+          photo.id &&
           <div key={photo.id} className='border-4 border-slate-100'>
             <Image src={photo.photo_url} width={100} height={100} alt='' onClick={() => {
               instanceRef.current?.moveToIdx(index)

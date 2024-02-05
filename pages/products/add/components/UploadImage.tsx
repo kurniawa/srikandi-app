@@ -5,6 +5,8 @@ import { db, storage } from '@/firebase.config';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 interface UploadImageProps {
+    setPhotoIndex: Dispatch<SetStateAction<number>>,
+    photo_index: number,
     setImageURL: Dispatch<SetStateAction<string>>,
     setErrorMessage: Dispatch<SetStateAction<string>>,
     setPathname: Dispatch<SetStateAction<string>>,
@@ -13,7 +15,7 @@ interface UploadImageProps {
 }
 
 // const UploadImage = ({collection_name, id}:UploadImageProps) => {
-const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto, setPathname, setFilename}:UploadImageProps) => {
+const UploadImage = ({setPhotoIndex, photo_index, setImageURL, setErrorMessage, JumlahPhoto, setPathname, setFilename}:UploadImageProps) => {
     const [imageFile, setImageFile] = useState<File>();
     // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +95,7 @@ const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto, setPathname, se
             }
         }
 
+        setPhotoIndex(photo_index);
         setIsLoading(false);
     }
 
@@ -101,7 +104,15 @@ const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto, setPathname, se
     }
     return ( 
         <div>
-            <input type="file" name="image" id="image" onChange={files => handleSelectFile(files.target.files)} />
+            <input type="file" name="image" id="input-image" className='hidden' onChange={files => handleSelectFile(files.target.files)} />
+            <div className='bg-sky-200 rounded'>
+                <label htmlFor="input-image" className='text-white flex justify-center'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-20 h-20">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                    </svg>
+                </label>
+            </div>
             <div>
                 {imageFile && 
                 <div className='p-2 border rounded flex gap-3'>
@@ -124,6 +135,7 @@ const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto, setPathname, se
                 }
             </div>
             {/* End - Preview Image */}
+            {imageFile &&
             <div className='mt-5'>
                 <button className='btn btn-success text-white' onClick={e => handleUpload(e)} disabled={isLoading}>
                     Upload
@@ -133,6 +145,7 @@ const UploadImage = ({setImageURL, setErrorMessage, JumlahPhoto, setPathname, se
                     <progress className="progress w-56" value={progressUpload} max="100"></progress>
                 </div>
             </div>
+            }
             {/* <div className="mt-5">
                 {
                 downloadURL && 
