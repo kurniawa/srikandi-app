@@ -5,21 +5,22 @@ import { db, storage } from '@/firebase.config';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 interface UploadImageProps {
-    setPhotoIndex: Dispatch<SetStateAction<number>>,
+    Product: any,
     photo_index: number,
-    setImageURL: Dispatch<SetStateAction<string>>,
-    setErrorMessage: Dispatch<SetStateAction<string>>,
-    setPathname: Dispatch<SetStateAction<string>>,
-    setFilename: Dispatch<SetStateAction<string>>,
     JumlahPhoto: number,
+    setErrorMessage: Dispatch<SetStateAction<string>>,
+    setWarningMessage: Dispatch<SetStateAction<string>>,
 }
 
 // const UploadImage = ({collection_name, id}:UploadImageProps) => {
-const UploadImage = ({setPhotoIndex, photo_index, setImageURL, setErrorMessage, JumlahPhoto, setPathname, setFilename}:UploadImageProps) => {
+const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWarningMessage}:UploadImageProps) => {
     const [imageFile, setImageFile] = useState<File>();
     // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [progressUpload, setProgressUpload] = useState<string | number>(0);
+    const [Pathname, setPathname] = useState('');
+    const [Filename, setFilename] = useState('');
+    const [ImageURL, setImageURL] = useState('');
 
     // const [RelatedCollection, setRelatedCollection] = useState('');
 
@@ -87,6 +88,7 @@ const UploadImage = ({setPhotoIndex, photo_index, setImageURL, setErrorMessage, 
                     getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
                         setImageURL(url);
                         // setDownloadURL(url)
+                        addImage();
                     });
                 }
                 );
@@ -95,19 +97,49 @@ const UploadImage = ({setPhotoIndex, photo_index, setImageURL, setErrorMessage, 
             }
         }
 
-        setPhotoIndex(photo_index);
         setIsLoading(false);
     }
 
     const handleRemoveImage = () => {
         setImageFile(undefined);
     }
+
+    const addImage = async () => {
+        // console.log('slug:', ImageURL);
+        let related_collection = 'perhiasan_photos';
+        let document_column = 'perhiasan_id';
+        if (Product.tipe_barang === 'LM') {
+            related_collection = 'perhiasan_lms';
+            document_column = 'lm_id';
+        }
+        // console.log(router.query.slug);
+        const q = query(collection(db, related_collection), where(document_column, "==", Product.id));
+
+        if (Product.tipe_barang === 'perhiasan') {
+            await setDoc(doc(collection(db, related_collection)), {
+                perhiasan_id: Product.id,
+                photo_url: ImageURL,
+                photo_pathname: Pathname,
+                photo_filename: Filename,
+                index: photo_index,
+            });
+        } else if (Product.tipe_barang === 'lm') {
+            await setDoc(doc(collection(db, related_collection)), {
+                lm_id: Product.id,
+                photo_url: ImageURL,
+                photo_pathname: Pathname,
+                photo_filename: Filename,
+                index: photo_index,
+            });
+        }
+  
+    }
     return ( 
         <div>
             <input type="file" name="image" id="input-image" className='hidden' onChange={files => handleSelectFile(files.target.files)} />
             <div className='bg-sky-200 rounded'>
                 <label htmlFor="input-image" className='text-white flex justify-center'>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-20 h-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-20 h-20">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                     </svg>
