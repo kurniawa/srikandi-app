@@ -18,9 +18,6 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
     // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [progressUpload, setProgressUpload] = useState<string | number>(0);
-    const [Pathname, setPathname] = useState('');
-    const [Filename, setFilename] = useState('');
-    const [ImageURL, setImageURL] = useState('');
 
     // const [RelatedCollection, setRelatedCollection] = useState('');
 
@@ -40,6 +37,10 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
         }
     }
 
+    let generated_filename = '';
+    let file_pathname = '';
+    let image_url = '';
+
     const handleUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsLoading(true);
@@ -47,11 +48,8 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
             setErrorMessage('Barang ini sudah memiliki 5 atau lebih foto!');
         } else {
             if (imageFile) {
-                const generated_new_name = Date.now().toString() + '.' + imageFile.name.split('.').pop();
-                const file_pathname = `images/perhiasan/${generated_new_name}`;
-
-                setPathname(file_pathname);
-                setFilename(generated_new_name);
+                generated_filename = Date.now().toString() + '.' + imageFile.name.split('.').pop();
+                file_pathname = `images/perhiasan/${generated_filename}`;
 
                 // const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
                 const storageRef = ref(storage, file_pathname);
@@ -86,9 +84,13 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
                     // Handle successful uploads on complete
                     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                     getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-                        setImageURL(url);
+                        image_url = url;
                         // setDownloadURL(url)
+                        
                         addImage();
+                        // setTimeout(() => {
+                        //     addImage();
+                        // }, 2000);
                     });
                 }
                 );
@@ -118,17 +120,17 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
         if (Product.tipe_barang === 'perhiasan') {
             await setDoc(doc(collection(db, related_collection)), {
                 perhiasan_id: Product.id,
-                photo_url: ImageURL,
-                photo_pathname: Pathname,
-                photo_filename: Filename,
+                photo_url: image_url,
+                photo_pathname: file_pathname,
+                photo_filename: generated_filename,
                 index: photo_index,
             });
         } else if (Product.tipe_barang === 'lm') {
             await setDoc(doc(collection(db, related_collection)), {
                 lm_id: Product.id,
-                photo_url: ImageURL,
-                photo_pathname: Pathname,
-                photo_filename: Filename,
+                photo_url: image_url,
+                photo_pathname: file_pathname,
+                photo_filename: generated_filename,
                 index: photo_index,
             });
         }

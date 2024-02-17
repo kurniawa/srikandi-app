@@ -59,7 +59,8 @@ const ProductDetailPage = () => {
           // const condition_main = []
           // condition_main.push(where("perhiasan_id", "==", router.query.slug[1]));
           // condition_main.push(where("status", "==", 'utama'));
-          q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]), orderBy('index'));
+          // q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]), orderBy('index'));
+          q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
         }
         const found_items:any = [];
         if (q_get_photos) {

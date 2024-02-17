@@ -51,9 +51,12 @@ const EditProduct = () => {
           // const condition_main = []
           // condition_main.push(where("perhiasan_id", "==", router.query.slug[1]));
           // condition_main.push(where("status", "==", 'utama'));
-          q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]), orderBy('index'));
+          // q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]), orderBy('urutan'));
+          q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
         }
         const found_items:any = [];
+        let ordered_items:any = [];
+
         if (q_get_photos) {
           const querySnapshot = await getDocs(q_get_photos);
 
@@ -66,22 +69,25 @@ const EditProduct = () => {
                 });
             });
           }
+          console.log(found_items);
           jumlah_photo = found_items.length;
           setJumlahPhoto(jumlah_photo);
 
           for (let i = 0; i < 5; i++) {
-            if (found_items[i]) {
-              if (found_items[i].index !== i+1) {
-                found_items[i].index = i+1;
-              } 
-            } else {
-              found_items[i] = {
-                index: i+1
-              };
+            let found = false;
+            found_items.forEach((item:any) => {
+              if (item.index === i+1) {
+                found = true;
+              }
+            });
+            if (!found) {
+              found_items.push({index: i+1});
             }
           }
 
-          setEditItemPhotos(found_items);
+          ordered_items = found_items.sort((a:any, b:any) => a.index - b.index); // b - a for reverse sort
+
+          setEditItemPhotos(ordered_items);
         }
     }
     }
@@ -92,40 +98,9 @@ const EditProduct = () => {
   // console.log(ProductPhotoSub);
   // console.log(EditItemPhotos);
 
-  // useEffect(() => {
-  //   const addImage = async () => {
-  //     // console.log('slug:', ImageURL);
-  //     let related_collection = 'perhiasan_photos';
-  //     if (Product.tipe_barang === 'LM') {
-  //       related_collection = 'perhiasan_lms'
-  //     }
-  //     // console.log(router.query.slug);
-  //     let q;
-  //     if (router.query.slug) {
-  //       q = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
-  //     }
-
-  //     // console.log(found_items);
-  //     if (router.query.slug) {
-        
-  //       await setDoc(doc(collection(db, related_collection)), {
-  //         perhiasan_id: router.query.slug[1],
-  //         photo_url: ImageURL,
-  //         photo_pathname: Pathname,
-  //         photo_filename: Filename,
-  //         index: PhotoIndex,
-  //       });
-  //     }
-  //   }
-
-  //   if (ImageURL && Product && ImageURL !== '') {
-  //     addImage();
-  //   }
-
-  // }, [ImageURL, setImageURL, Product, router, JumlahPhoto, Pathname, Filename, PhotoIndex])
-
   const handleDeletePhoto = async (e:BaseSyntheticEvent) => {
     e.preventDefault();
+    let warnings_ = '';
     const confirm:boolean = window.confirm('Anda yakin ingin menghapus foto ini?');
     // console.log(confirm);
     // console.log(e.target.photo_index.value);
@@ -148,18 +123,29 @@ const EditProduct = () => {
     querySnapshot.forEach(async (item) => {
       // cek apakah foto digunakan juga pada produk lain
       // console.log(item.data().photo_pathname);
-      const q2 = query(collection(db, related_collection), where(document_column, "==", Product.id), where('photo_pathname', '==', item.data().photo_pathname));
+      const q2 = query(collection(db, related_collection), where('photo_pathname', '==', item.data().photo_pathname));
+      let found_items:any = [];
       const querySnapshot2 = await getDocs(q2);
+      querySnapshot2.forEach(item => {
+        found_items.push({id:item.id});
+      });
 
-      let delete_file = false;
-      if (querySnapshot2.docs.length === 0) {
-        delete_file = true;
-      }
+      let exist_pada_item_lain = true;
+      found_items.forEach((item:any) => {
+        if (item.id != Product.id) {
+          exist_pada_item_lain = false;
+        }
+      });
+
+      // let delete_file = false;
+      // if (querySnapshot2.docs.length === 0) {
+      //   delete_file = true;
+      // }
 
       deleteDoc(doc(db, related_collection, item.id));
-      setWarningMessage(`-Document in ${related_collection} deleted.-`);
+      warnings_ += `-Document in ${related_collection} deleted.-`;
 
-      if (delete_file) {
+      if (!exist_pada_item_lain) {
         const storage = getStorage();
 
         // Create a reference to the file to delete
@@ -168,11 +154,15 @@ const EditProduct = () => {
         // Delete the file
         deleteObject(file_ref).then(() => {
           // File deleted successfully
-          setWarningMessage(WarningMessage + '-File in storage deleted-')
+          warnings_ += '-File in storage deleted-'
         }).catch((error) => {
           // Uh-oh, an error occurred!
         });
+
       }
+      setTimeout(() => {
+        setWarningMessage(warnings_);
+      }, 1000);
     });
   }
 
