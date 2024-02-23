@@ -8,16 +8,19 @@ import { useRouter } from "next/router";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import UploadImage from "../add/components/UploadImage";
 import { deleteObject, getStorage, ref } from "firebase/storage";
+import Link from "next/link";
 
 const EditProduct = () => {
   const router = useRouter();
   const [Product, setProduct] = useState<any>();
   const [EditItemPhotos, setEditItemPhotos] = useState<any>();
   const [DataUser, setDataUser] = useState<any>();
-  const [JumlahPhoto, setJumlahPhoto] = useState(0);
+  // const [JumlahPhoto, setJumlahPhoto] = useState(0);
   const [ErrorMessage, setErrorMessage] = useState('');
   const [WarningMessage, setWarningMessage] = useState('');
-  const [PhotoIndex, setPhotoIndex] = useState(99);
+  // const [PhotoIndex, setPhotoIndex] = useState(99);
+  const [TipeBarang, setTipeBarang] = useState('');
+  const [IdBarang, setIdBarang] = useState('');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,9 +33,10 @@ const EditProduct = () => {
 
         // console.log(fetched_product);
         setProduct(fetched_product);
+        setTipeBarang(router.query.slug[0]);
+        setIdBarang(router.query.slug[1]);
       }
     }
-
     fetchProduct()
   },[setProduct, router.query.slug]);
 
@@ -70,8 +74,8 @@ const EditProduct = () => {
             });
           }
           console.log(found_items);
-          jumlah_photo = found_items.length;
-          setJumlahPhoto(jumlah_photo);
+          // jumlah_photo = found_items.length;
+          // setJumlahPhoto(jumlah_photo);
 
           for (let i = 0; i < 5; i++) {
             let found = false;
@@ -201,7 +205,17 @@ const EditProduct = () => {
                   <td>{index+1}</td>
                   <td>
                       {/* <UploadImage setPhotoIndex={setPhotoIndex} photo_index={index+1} setImageURL={setImageURL} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage} setFilename={setFilename} setPathname={setPathname}></UploadImage> */}
-                      <UploadImage Product={Product} photo_index={index+1} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage} setWarningMessage={setWarningMessage}></UploadImage>
+                      {/* <UploadImage Product={Product} photo_index={index+1} JumlahPhoto={JumlahPhoto} setErrorMessage={setErrorMessage} setWarningMessage={setWarningMessage}></UploadImage> */}
+                      <Link href={`/products/edit/pilih_photo/${TipeBarang}/${IdBarang}/${index+1}`}>
+                        <div className='bg-sky-200 rounded'>
+                          <label className='text-white flex justify-center'>
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-20 h-20">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                              </svg>
+                          </label>
+                        </div>
+                      </Link>
                   </td>
               </tr>
               )}
