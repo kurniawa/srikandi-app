@@ -147,7 +147,7 @@ const EditProduct = () => {
       // }
 
       deleteDoc(doc(db, related_collection, item.id));
-      warnings_ += `-Document in ${related_collection} deleted.-`;
+      warnings_ += `-Dokumen pada ${related_collection} dihapus.-`;
 
       if (!exist_pada_item_lain) {
         const storage = getStorage();
@@ -158,7 +158,7 @@ const EditProduct = () => {
         // Delete the file
         deleteObject(file_ref).then(() => {
           // File deleted successfully
-          warnings_ += '-File in storage deleted-'
+          warnings_ += '-File di dalam storage dihapus-'
         }).catch((error) => {
           // Uh-oh, an error occurred!
         });
@@ -167,6 +167,10 @@ const EditProduct = () => {
       setTimeout(() => {
         setWarningMessage(warnings_);
       }, 1000);
+
+      setTimeout(() => {
+        router.reload();
+      }, 3000);
     });
   }
 
@@ -222,7 +226,7 @@ const EditProduct = () => {
               </tbody>
           </table>
           }
-          <div role="alert" className="w-3/4  fixed bottom-9 text-white animate-pulse">
+          <div role="alert" className="fixed bottom-9 text-white animate-pulse">
           {ErrorMessage && 
             <div className="flex justify-between bg-success p-3 rounded">
               <div className="flex gap-2">

@@ -23,7 +23,8 @@ const ProductDetailPage = () => {
   // const [ProductPhotoSub, setProductPhotoSub] = useState<any>();
   const [ShowSlider, setShowSlider] = useState(false);
   const [ItemPhotos, setItemPhotos] = useState<any>();
-  const [EditItemPhotos, setEditItemPhotos] = useState<any>();
+  // const [EditItemPhotos, setEditItemPhotos] = useState<any>();
+  const cart_lists = ['A', 'B', 'C', 'D', 'E'];
 
   const [DataUser, setDataUser] = useState<any>();
 
@@ -63,6 +64,8 @@ const ProductDetailPage = () => {
           q_get_photos = query(collection(db, related_collection), where("perhiasan_id", "==", router.query.slug[1]));
         }
         const found_items:any = [];
+        let ordered_items:any = [];
+
         if (q_get_photos) {
           const querySnapshot = await getDocs(q_get_photos);
 
@@ -76,57 +79,48 @@ const ProductDetailPage = () => {
             });
           }
 
-          // if (found_items.length >= 0) {
-          //   found_items.forEach((item:any) => {
-          //     if (item.status === 'main') {
-          //       found_main = item;
-          //     } else {
-          //       found_sub.push(item);
-          //     }
-          //     jumlah_photo++;
-          //   });
-          // }
-
-          // setProductPhotoMain(found_main);
-          // setProductPhotoSub(found_sub);
-
-          // let image_gabungan:any = [];
-          // if (found_main) {
-          //   image_gabungan.push(found_main);
-          //   if (found_sub.length !== 0) {
-          //     image_gabungan = image_gabungan.concat(found_sub)
-          //   }
-          // } else if(found_sub.length !== 0) {
-          //   image_gabungan = found_sub;
-          // }
-
-          setItemPhotos(found_items);
-          if (found_items.length !== 0) {
-            setShowSlider(true);
-          }
-
           for (let i = 0; i < 5; i++) {
-            if (found_items[i]) {
-              if (found_items[i].index !== i+1) {
-                found_items[i].index = i+1;
-              } 
-            } else {
-              found_items[i] = {
-                index: i+1
-              };
+            let found = false;
+            found_items.forEach((item:any) => {
+              if (item.index === i+1) {
+                found = true;
+              }
+            });
+            if (!found) {
+              found_items.push({index: i+1});
             }
           }
 
-          setEditItemPhotos(found_items);
+          ordered_items = found_items.sort((a:any, b:any) => a.index - b.index); // b - a for reverse sort
+
+          setItemPhotos(ordered_items);
+
+          if (ordered_items.length !== 0) {
+            setShowSlider(true);
+          }
+
+          // for (let i = 0; i < 5; i++) {
+          //   if (found_items[i]) {
+          //     if (found_items[i].index !== i+1) {
+          //       found_items[i].index = i+1;
+          //     } 
+          //   } else {
+          //     found_items[i] = {
+          //       index: i+1
+          //     };
+          //   }
+          // }
+
+          // setEditItemPhotos(ordered_items);
         }
       }
     }
 
     fetchProductPhotos();
 
-  }, [Product, router, setItemPhotos, setShowSlider, setEditItemPhotos]);
+  }, [Product, router, setItemPhotos, setShowSlider]);
   // console.log(ProductPhotoSub);
-  console.log(EditItemPhotos);
+  // console.log(EditItemPhotos);
 
 
   
@@ -147,6 +141,25 @@ const ProductDetailPage = () => {
   //   setShowEdit('hidden');
   //   setShowDetail('block');
   // }
+  const handleAddToCart = async () => {
+    if (DataUser) {
+      if (DataUser.role === 'admin') {
+        await setDoc(doc(collection(db, "carts")), {
+          user_id: DataUser.username,
+          tipe_cart: 'A',
+          product_id: Product.id,
+          jumlah: 1,
+          time: Date.now().toString(),
+        });
+      }
+    }
+  }
+  // console.log(DataUser.username);
+
+  // const showChooseCart = () => {
+
+  // }
+
   return (
     <>
       <SessionProvider>
@@ -256,8 +269,26 @@ const ProductDetailPage = () => {
         (DataUser.role === 'admin') ?
         // <div className={ShowDetail}>
         <div>
-          <div className="flex justify-center">
-            <button type='button' className='btn btn-success text-white'>+ Keranjang</button>
+          <div className="flex justify-center items-center">
+            <button type='button' className='btn btn-success text-white flex' onClick={handleAddToCart}>
+              <span>+</span>
+              <span>Keranjang</span> 
+              {/* <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </span> */}
+            </button>
+              {/* <div className="absolute top-10 right-0">
+              {cart_lists.map((cart, index) =>
+                  <button className='flex items-center gap-1 p-1 text-white bg-primary rounded-xl' key={index} onClick={() => handleAddToCart(cart)}>
+                      <span>{cart}:</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                      </svg>
+                  </button>
+              )}
+              </div> */}
           </div>
           {router && router.query && router.query.slug &&
           <div className="flex justify-center mt-2">

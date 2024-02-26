@@ -3,21 +3,26 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import Image from 'next/image';
 import { db, storage } from '@/firebase.config';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { redirect, useRouter } from 'next/navigation';
 
 interface UploadImageProps {
     Product: any,
-    photo_index: number,
-    JumlahPhoto: number,
+    PhotoIndex: number,
+    // JumlahPhoto: number,
+    TipeBarang: string,
+    IdBarang: string,
     setErrorMessage: Dispatch<SetStateAction<string>>,
     setWarningMessage: Dispatch<SetStateAction<string>>,
+    setSuccessMessage: Dispatch<SetStateAction<string>>,
 }
 
 // const UploadImage = ({collection_name, id}:UploadImageProps) => {
-const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWarningMessage}:UploadImageProps) => {
+const UploadImage = ({Product, PhotoIndex, TipeBarang, IdBarang, setSuccessMessage, setErrorMessage, setWarningMessage}:UploadImageProps) => {
     const [imageFile, setImageFile] = useState<File>();
     // const [downloadURL, setDownloadURL] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [progressUpload, setProgressUpload] = useState<string | number>(0);
+    const router = useRouter();
 
     // const [RelatedCollection, setRelatedCollection] = useState('');
 
@@ -44,60 +49,60 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
     const handleUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        if (JumlahPhoto >= 5) {
-            setErrorMessage('Barang ini sudah memiliki 5 atau lebih foto!');
-        } else {
-            if (imageFile) {
-                generated_filename = Date.now().toString() + '.' + imageFile.name.split('.').pop();
-                file_pathname = `images/perhiasan/${generated_filename}`;
+        if (imageFile) {
+            generated_filename = Date.now().toString() + '.' + imageFile.name.split('.').pop();
+            file_pathname = `images/perhiasan/${generated_filename}`;
 
-                // const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
-                const storageRef = ref(storage, file_pathname);
-    
-                const uploadTask = uploadBytesResumable(storageRef, imageFile);
-    
-                // Register three observers:
-                // 1. 'state_changed' observer, called any time the state changes
-                // 2. Error observer, called on failure
-                // 3. Completion observer, called on successful completion
-                uploadTask.on('state_changed', 
-                (snapshot) => {
-                    // Observe state change events such as progress, pause, and resume
-                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress + '% done');
-                    setProgressUpload(progress);
-                    switch (snapshot.state) {
-                    case 'paused':
-                        console.log('Upload is paused');
-                        break;
-                    case 'running':
-                        console.log('Upload is running');
-                        break;
-                    }
-                }, 
-                (error) => {
-                    // Handle unsuccessful uploads
-                    console.log(error);
-                }, 
-                () => {
-                    // Handle successful uploads on complete
-                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-                        image_url = url;
-                        // setDownloadURL(url)
-                        
-                        addImage();
-                        // setTimeout(() => {
-                        //     addImage();
-                        // }, 2000);
-                    });
+            // const storageRef = ref(storage, `images/perhiasan/${imageFile.name}`);
+            const storageRef = ref(storage, file_pathname);
+
+            const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+            // Register three observers:
+            // 1. 'state_changed' observer, called any time the state changes
+            // 2. Error observer, called on failure
+            // 3. Completion observer, called on successful completion
+            uploadTask.on('state_changed', 
+            (snapshot) => {
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                setProgressUpload(progress);
+                switch (snapshot.state) {
+                case 'paused':
+                    console.log('Upload is paused');
+                    break;
+                case 'running':
+                    console.log('Upload is running');
+                    break;
                 }
-                );
-            } else {
-                console.log('File not found!');
+            }, 
+            (error) => {
+                // Handle unsuccessful uploads
+                console.log(error);
+            }, 
+            () => {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+                    image_url = url;
+                    // setDownloadURL(url)
+                    
+                    addImage();
+                    // setTimeout(() => {
+                    //     addImage();
+                    // }, 2000);
+                });
             }
+            );
+        } else {
+            console.log('File not found!');
         }
+        // if (JumlahPhoto >= 5) {
+        //     setErrorMessage('Barang ini sudah memiliki 5 atau lebih foto!');
+        // } else {
+        // }
 
         setIsLoading(false);
     }
@@ -123,7 +128,7 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
                 photo_url: image_url,
                 photo_pathname: file_pathname,
                 photo_filename: generated_filename,
-                index: photo_index,
+                index: PhotoIndex,
             });
         } else if (Product.tipe_barang === 'lm') {
             await setDoc(doc(collection(db, related_collection)), {
@@ -131,15 +136,19 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
                 photo_url: image_url,
                 photo_pathname: file_pathname,
                 photo_filename: generated_filename,
-                index: photo_index,
+                index: PhotoIndex,
             });
         }
-  
+
+        // router.push('/');
+        // router.push('/products');
+        // router.push(`/products/detail/${TipeBarang}/${IdBarang}`);
+        setSuccessMessage('Foto berhasil diupload, silahkan kembali ke halaman sebelumnya!')
     }
     return ( 
         <div>
             <input type="file" name="image" id="input-image" className='hidden' onChange={files => handleSelectFile(files.target.files)} />
-            <div className='bg-sky-200 rounded'>
+            <div className='bg-emerald-200 rounded'>
                 <label htmlFor="input-image" className='text-white flex justify-center'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-20 h-20">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -170,12 +179,14 @@ const UploadImage = ({Product, photo_index, JumlahPhoto, setErrorMessage, setWar
             </div>
             {/* End - Preview Image */}
             {imageFile &&
-            <div className='mt-5'>
-                <button className='btn btn-success text-white' onClick={e => handleUpload(e)} disabled={isLoading}>
-                    Upload
-                    {isLoading && <span className='loading loading-spinner'></span>}
-                </button>
-                <div className='mt-2'>
+            <div className='mt-3'>
+                <div className="flex justify-center">
+                    <button className='btn btn-success text-white' onClick={e => handleUpload(e)} disabled={isLoading}>
+                        Upload
+                        {isLoading && <span className='loading loading-spinner'></span>}
+                    </button>
+                </div>
+                <div className='mt-2 flex justify-center'>
                     <progress className="progress w-56" value={progressUpload} max="100"></progress>
                 </div>
             </div>
